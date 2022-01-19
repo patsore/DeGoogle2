@@ -2,6 +2,8 @@ package com.example.degoogle;
 
 import android.os.Bundle;
 
+import com.example.degoogle.adapter.MainRecyclerAdapter;
+import com.example.degoogle.model.AllCategories;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,16 +11,26 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.databinding.ActivityNavBarBinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NavBar extends AppCompatActivity {
+
+    RecyclerView CategoryRecycler;
+    MainRecyclerAdapter mainRecyclerAdapter;
 
     private ActivityNavBarBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         binding = ActivityNavBarBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -32,6 +44,26 @@ public class NavBar extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_nav_bar);
 //        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
+
+
+        //add dummy categories
+
+        List<AllCategories> allCategoriesList = new ArrayList<>();
+        allCategoriesList.add(new AllCategories("Testing"));
+        allCategoriesList.add(new AllCategories("Adasd"));
+        allCategoriesList.add(new AllCategories("ashyhasdf"));
+
+        setCategoryRecycler(allCategoriesList);
     }
+
+
+    private void setCategoryRecycler(List<AllCategories> allCategoriesList){
+        CategoryRecycler = findViewById(R.id.recycler_view_home);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        CategoryRecycler.setLayoutManager(layoutManager);
+        mainRecyclerAdapter = new MainRecyclerAdapter(this, allCategoriesList);
+        CategoryRecycler.setAdapter(mainRecyclerAdapter);
+    }
+
 
 }

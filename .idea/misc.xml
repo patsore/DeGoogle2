@@ -5,15 +5,21 @@
       <map>
         <entry key="..\:/DeGoogle2/app/src/main/res/drawable/ic_baseline_arrow_circle_down_24.xml" value="0.2604166666666667" />
         <entry key="..\:/DeGoogle2/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.2604166666666667" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2604166666666667" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.2604166666666667" />
         <entry key="..\:/DeGoogle2/app/src/main/res/drawable/shadows.xml" value="0.43435897435897436" />
         <entry key="..\:/DeGoogle2/app/src/main/res/drawable/top_rounded_corners.xml" value="0.2604166666666667" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/activity_nav_bar.xml" value="0.33" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/layout/child_item.xml" value="1.0" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/fragment_dashboard.xml" value="0.3984375" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/fragment_home.xml" value="0.3984375" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/fragment_notifications.xml" value="0.24427083333333333" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/fragment_testscrolling.xml" value="0.24427083333333333" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/fragment_updates.xml" value="0.3875" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/layout/main_recyclerview_item.xml" value="0.32916666666666666" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/layout/parent_item.xml" value="0.39402173913043476" />
+        <entry key="..\:/DeGoogle2/app/src/main/res/layout/recycler_layout.xml" value="0.39402173913043476" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/shadows.xml" value="0.32916666666666666" />
         <entry key="..\:/DeGoogle2/app/src/main/res/layout/test_fragment.xml" value="0.24427083333333333" />
         <entry key="..\:/DeGoogle2/app/src/main/res/menu/bottom_nav_menu.xml" value="0.4359375" />
