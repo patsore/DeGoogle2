@@ -1,9 +1,13 @@
 package com.example.degoogle;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.model.AllCategories;
+import com.example.degoogle.model.CategoryChild;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,9 +27,7 @@ public class NavBar extends AppCompatActivity {
 
     RecyclerView CategoryRecycler;
     MainRecyclerAdapter mainRecyclerAdapter;
-
     private ActivityNavBarBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,13 +49,17 @@ public class NavBar extends AppCompatActivity {
 
 
         //add dummy categories
+        List<CategoryChild> categoryChildren = new ArrayList<>();
+        categoryChildren.add(new CategoryChild(1, "source.unsplash.com/random"));
+
 
         List<AllCategories> allCategoriesList = new ArrayList<>();
-        allCategoriesList.add(new AllCategories("Testing"));
-        allCategoriesList.add(new AllCategories("Adasd"));
-        allCategoriesList.add(new AllCategories("ashyhasdf"));
+        allCategoriesList.add(new AllCategories("Category 1", categoryChildren));
+        allCategoriesList.add(new AllCategories("Category 2", categoryChildren));
+        allCategoriesList.add(new AllCategories("Category 3", categoryChildren));
 
         setCategoryRecycler(allCategoriesList);
+
     }
 
 

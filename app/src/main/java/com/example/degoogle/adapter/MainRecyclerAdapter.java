@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.MainActivity;
 import com.example.degoogle.R;
 import com.example.degoogle.model.AllCategories;
+import com.example.degoogle.model.CategoryChild;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
     holder.categoryTitle.setText(allCategoriesList.get(position).getCategoryTitle());
+    setCatItemRecycler(holder.childRecycler, allCategoriesList.get(position).getCategoryChildList());
     }
 
     @Override
@@ -39,10 +42,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     public static final class MainViewHolder extends RecyclerView.ViewHolder{
 
         TextView categoryTitle;
-
+        RecyclerView childRecycler;
         public MainViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryTitle = itemView.findViewById(R.id.category_name);
+            childRecycler = itemView.findViewById(R.id.child_recycler);
         }
     }
 
@@ -50,4 +54,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
         this.context = context;
         this.allCategoriesList = allCategoriesList;
     }
+    private void  setCatItemRecycler(RecyclerView recyclerView, List<CategoryChild> categoryChildren ){
+        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(context, categoryChildren);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+        recyclerView.setAdapter(childItemRecyclerAdapter);
+    }
+
 }
+
+
