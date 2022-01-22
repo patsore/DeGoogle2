@@ -2,6 +2,7 @@ package com.example.degoogle.adapter;
 
 import android.content.Context;
 import android.media.Image;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,12 @@ import java.util.List;
 public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecyclerAdapter.ChildItemViewHolder> {
     private Context mContext;
     public List<CategoryChild> categoryChildren;
+    private static final String TAG = "RecyclerViewAdapter";
+    public ImageView childImage;
     public ChildItemRecyclerAdapter(Context context, List<CategoryChild> categoryChildren) {
         this.mContext = context;
         this.categoryChildren = categoryChildren;
+
     }
 
 
@@ -33,13 +37,14 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     public ChildItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         return new ChildItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.child_row_item, parent, false));
+
     }
 
 
 
     @Override
     public void onBindViewHolder(@NonNull ChildItemViewHolder holder, int position) {
-
+        Glide.with(mContext).asBitmap().load("https://source.unsplash.com/random").into(holder.childImage);
     }
 
     @Override
@@ -49,12 +54,13 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
     public static final class ChildItemViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView childImage;
+        public ImageView childImage;
 
 
         public ChildItemViewHolder(@NonNull View itemView) {
             super(itemView);
             childImage = itemView.findViewById(R.id.child_image);
+
         }
     }
 
