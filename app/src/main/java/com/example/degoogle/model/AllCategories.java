@@ -1,25 +1,23 @@
 package com.example.degoogle.model;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.List;
 
 public class AllCategories {
 
     String categoryTitle;
-    List<CategoryChild> categoryChildList;
+    String Url;
 
-    public AllCategories(String categoryTitle, List<CategoryChild> categoryChildList) {
+    public AllCategories(String categoryTitle, String Url) {
         this.categoryTitle = categoryTitle;
-        this.categoryChildList = categoryChildList;
+        this.Url = Url;
     }
 
-    public List<CategoryChild> getCategoryChildList() {
-        return categoryChildList;
+    public String getUrl() {
+        return Url;
     }
 
-    public void setCategoryChildList(List<CategoryChild> categoryChildList) {
-        this.categoryChildList = categoryChildList;
+    public void setUrl(String url) {
+        Url = url;
     }
 
     public String getCategoryTitle() {
