@@ -1,32 +1,28 @@
 package com.example.degoogle.adapter;
-
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.degoogle.MainActivity;
 import com.example.degoogle.R;
-import com.example.degoogle.model.AllCategories;
-import com.example.degoogle.model.CategoryChild;
-
 import java.util.ArrayList;
-import java.util.List;
+
+
+
 
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder> {
 
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private Context mContext;
-    private ArrayList<String> categoryTitles = new ArrayList<>();
+    private ArrayList<String> mCategoryTitles = new ArrayList<>();
+    private ArrayList<String> mDescription = new ArrayList<>();
 
-    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls) {
+    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls,  ArrayList<String> titles) {
+        mCategoryTitles = titles;
         mNames = names;
         mImageUrls = imageUrls;
         mContext = context;
@@ -42,17 +38,13 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        categoryTitles.add("Category");
-    holder.categoryTitles.setText(categoryTitles.get(position));
+    holder.categoryTitles.setText(mCategoryTitles.get(position));
     setCatItemRecycler(holder.childRecycler, mNames.get(position));
     }
 
-
-
-
     @Override
     public int getItemCount() {
-        return mNames.size();
+        return mCategoryTitles.size();
     }
 
     public static final class MainViewHolder extends RecyclerView.ViewHolder{
@@ -69,7 +61,7 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
 
     private void  setCatItemRecycler(RecyclerView recyclerView, String categoryChildren ){
-        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(mContext, mNames, mImageUrls);
+        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(mContext, mNames, mImageUrls, mDescription);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
         recyclerView.setAdapter(childItemRecyclerAdapter);
     }

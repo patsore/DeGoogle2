@@ -3,13 +3,9 @@ package com.example.degoogle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.degoogle.ui.dashboard.DashboardFragment;
 import com.example.degoogle.ui.home.HomeFragment;
-import com.example.degoogle.ui.notifications.NotificationsFragment;
 
-import java.text.Normalizer;
 
 public class FragmentPagerAdapters extends androidx.fragment.app.FragmentPagerAdapter {
 

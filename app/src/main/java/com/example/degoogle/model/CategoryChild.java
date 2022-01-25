@@ -1,5 +1,7 @@
 package com.example.degoogle.model;
 
+import java.util.ArrayList;
+
 public class CategoryChild {
 
     Integer childId;

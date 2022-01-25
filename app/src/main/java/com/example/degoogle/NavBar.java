@@ -1,6 +1,5 @@
 package com.example.degoogle;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.example.degoogle.adapter.MainRecyclerAdapter;
@@ -27,7 +26,8 @@ public class NavBar extends AppCompatActivity {
     private ActivityNavBarBinding binding;
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
-    private ArrayList<String> categoryTitles = new ArrayList<>();
+    private ArrayList<String> mCategoryTitles = new ArrayList<>();
+    private ArrayList<String> mDescription = new ArrayList<>();
 
 
 
@@ -54,58 +54,70 @@ public class NavBar extends AppCompatActivity {
 
 
         List<AllCategories> allCategoriesList = new ArrayList<>();
-        allCategoriesList.add(new AllCategories("Category 1", "Test"));
-        allCategoriesList.add(new AllCategories("Category 2", "test"));
-        allCategoriesList.add(new AllCategories("Category 3", "test"));
-        CategoryTitles();
+
         getImages();
 
-        setCategoryRecycler(allCategoriesList);
+        setCategoryRecycler();
     }
-    private void CategoryTitles(){
 
-        categoryTitles.add("Category 1");
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        setCategoryRecycler();
+
     }
 
     private void getImages(){
+        mCategoryTitles.add("Category 1");
+        mCategoryTitles.add("Category 2");
+        mCategoryTitles.add("Category 3");
 
-        mImageUrls.add("https://c1.staticflickr.com/5/4636/25316407448_de5fbf183d_o.jpg");
+
+        mDescription.add("Lorem Ipsum");
+        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Havasu Falls");
 
+        mDescription.add("Lorem Ipsum2");
         mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
         mNames.add("Trondheim");
 
+        mDescription.add("Lorem Ipsum3");
         mImageUrls.add("https://i.redd.it/qn7f9oqu7o501.jpg");
         mNames.add("Portugal");
 
+        mDescription.add("Lorem Ipsum4");
         mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
         mNames.add("Rocky Mountain National Park");
 
-
+        mDescription.add("Lorem Ipsum5");
         mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
         mNames.add("Mahahual");
 
+        mDescription.add("Lorem Ipsum6");
         mImageUrls.add("https://i.redd.it/k98uzl68eh501.jpg");
         mNames.add("Frozen Lake");
 
-
+        mDescription.add("Lorem Ipsum7");
         mImageUrls.add("https://i.redd.it/glin0nwndo501.jpg");
         mNames.add("White Sands Desert");
 
+        mDescription.add("Lorem Ipsum8");
         mImageUrls.add("https://i.redd.it/obx4zydshg601.jpg");
         mNames.add("Austrailia");
 
+        mDescription.add("Lorem Ipsum9");
         mImageUrls.add("https://i.imgur.com/ZcLLrkY.jpg");
         mNames.add("Washington");
 
     }
 
 
-    private void setCategoryRecycler(List<AllCategories> allCategoriesList){
+    private void setCategoryRecycler(){
         CategoryRecycler = findViewById(R.id.recycler_view_home);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         CategoryRecycler.setLayoutManager(layoutManager);
-        mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls);
+        mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls, mCategoryTitles);
         CategoryRecycler.setAdapter(mainRecyclerAdapter);
     }
 

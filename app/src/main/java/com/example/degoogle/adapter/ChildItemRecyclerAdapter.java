@@ -17,6 +17,8 @@ import com.example.degoogle.NavBar;
 import com.example.degoogle.R;
 import com.example.degoogle.model.CategoryChild;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.lang.reflect.Array;
 import java.net.URL;
@@ -28,12 +30,14 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     public ImageView childImage;
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
+    public ArrayList<String> mDescription = new ArrayList<>();
 
 
-    public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls) {
+    public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription) {
         this.mContext = mContext;
         this.mNames = mNames;
         this.mImageUrls = mImageUrls;
+        this.mDescription = mDescription;
     }
 
     @NonNull
@@ -51,7 +55,9 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         Glide.with(mContext).asBitmap().load(mImageUrls.get(position)).into(holder.childImage);
 
+        mDescription.add("Lorem Ipsum9");
         holder.appName.setText(mNames.get(position));
+        holder.description.setText(mDescription.get(position));
 
     }
 
@@ -64,12 +70,12 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         public ImageView childImage;
         public TextView appName;
-
+        public TextView description;
         public ChildItemViewHolder(@NonNull View itemView) {
             super(itemView);
             childImage = itemView.findViewById(R.id.child_image);
             appName = itemView.findViewById(R.id.app_title);
-
+            description = itemView.findViewById(R.id.app_description);
         }
     }
 

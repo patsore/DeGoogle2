@@ -1,13 +1,13 @@
 package com.example.degoogle.model;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class AllCategories {
 
-    String categoryTitle;
+    ArrayList<String> categoryTitle;
     String Url;
 
-    public AllCategories(String categoryTitle, String Url) {
+    public AllCategories(ArrayList<String> categoryTitle, String Url) {
         this.categoryTitle = categoryTitle;
         this.Url = Url;
     }
@@ -20,11 +20,11 @@ public class AllCategories {
         Url = url;
     }
 
-    public String getCategoryTitle() {
+    public ArrayList<String> getCategoryTitle() {
         return categoryTitle;
     }
 
-    public void setCategoryTitle(String categoryTitle) {
+    public void setCategoryTitle(ArrayList<String> categoryTitle) {
         this.categoryTitle = categoryTitle;
     }
 }
