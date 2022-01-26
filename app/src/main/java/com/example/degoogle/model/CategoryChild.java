@@ -3,29 +3,37 @@ package com.example.degoogle.model;
 import java.util.ArrayList;
 
 public class CategoryChild {
+    String mDescription;
+    String mNames;
+    String mImageUrls;
 
-    Integer childId;
-    String url;
-
-    public CategoryChild(Integer childId, String url) {
-        this.url = url;
-        this.childId = childId;
+    public CategoryChild(String mDescription, String mNames, String mImageUrls) {
+        this.mDescription = mDescription;
+        this.mNames = mNames;
+        this.mImageUrls = mImageUrls;
     }
 
-
-    public String getUrl() {
-        return url;
+    public String getmDescription() {
+        return mDescription;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
     }
 
-    public Integer getChildId() {
-        return childId;
+    public String getmNames() {
+        return mNames;
     }
 
-    public void setChildId(Integer childId) {
-        this.childId = childId;
+    public void setmNames(String mNames) {
+        this.mNames = mNames;
+    }
+
+    public String getmImageUrls() {
+        return mImageUrls;
+    }
+
+    public void setmImageUrls(String mImageUrls) {
+        this.mImageUrls = mImageUrls;
     }
 }

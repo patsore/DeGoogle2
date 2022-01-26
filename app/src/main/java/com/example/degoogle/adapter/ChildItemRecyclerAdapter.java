@@ -31,13 +31,15 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
     public ArrayList<String> mDescription = new ArrayList<>();
+    public ArrayList<CategoryChild> categoryChildren;
 
 
-    public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription) {
+    public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription, ArrayList<CategoryChild> categoryChildren) {
         this.mContext = mContext;
         this.mNames = mNames;
         this.mImageUrls = mImageUrls;
         this.mDescription = mDescription;
+        this.categoryChildren = categoryChildren;
     }
 
     @NonNull
@@ -53,17 +55,19 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     @Override
     public void onBindViewHolder(@NonNull ChildItemViewHolder holder, int position) {
 
-        Glide.with(mContext).asBitmap().load(mImageUrls.get(position)).into(holder.childImage);
 
 
-        holder.appName.setText(mNames.get(position));
-        holder.description.setText(mDescription.get(position));
+        Glide.with(mContext).asBitmap().load(categoryChildren.get(position).getmImageUrls()).into(holder.childImage);
+
+
+        holder.appName.setText(categoryChildren.get(position).getmNames());
+        holder.description.setText(categoryChildren.get(position).getmDescription());
 
     }
 
     @Override
     public int getItemCount() {
-        return mNames.size();
+        return categoryChildren.size();
     }
 
     public static final class ChildItemViewHolder extends RecyclerView.ViewHolder{

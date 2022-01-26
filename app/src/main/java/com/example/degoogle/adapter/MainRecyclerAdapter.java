@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.degoogle.R;
+import com.example.degoogle.model.AllCategories;
+import com.example.degoogle.model.CategoryChild;
+
 import java.util.ArrayList;
 
 
@@ -20,13 +23,15 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     private Context mContext;
     private ArrayList<String> mCategoryTitles = new ArrayList<>();
     private ArrayList<String> mDescription = new ArrayList<>();
+    private ArrayList<AllCategories> allCategories;
 
-    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls,  ArrayList<String> titles, ArrayList<String> description) {
+    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls,  ArrayList<String> titles, ArrayList<String> description, ArrayList<AllCategories> allCategories) {
         mCategoryTitles = titles;
         mNames = names;
         mImageUrls = imageUrls;
         mContext = context;
         mDescription = description;
+        this.allCategories = allCategories;
     }
 
     @NonNull
@@ -39,13 +44,13 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-    holder.categoryTitles.setText(mCategoryTitles.get(position));
-    setCatItemRecycler(holder.childRecycler, mNames.get(position));
+    holder.categoryTitles.setText(allCategories.get(position).getCategoryTitle());
+    setCatItemRecycler(holder.childRecycler, allCategories.get(position).getCategoryChildren());
     }
 
     @Override
     public int getItemCount() {
-        return mCategoryTitles.size();
+        return allCategories.size();
     }
 
     public static final class MainViewHolder extends RecyclerView.ViewHolder{
@@ -61,8 +66,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
 
 
-    private void  setCatItemRecycler(RecyclerView recyclerView, String categoryChildren ){
-        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(mContext, mNames, mImageUrls, mDescription);
+    private void  setCatItemRecycler(RecyclerView recyclerView, ArrayList<CategoryChild> categoryChildren){
+        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(mContext, mNames, mImageUrls, mDescription, categoryChildren);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
         recyclerView.setAdapter(childItemRecyclerAdapter);
     }

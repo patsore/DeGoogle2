@@ -4,27 +4,27 @@ import java.util.ArrayList;
 
 public class AllCategories {
 
-    ArrayList<String> categoryTitle;
-    String Url;
+    ArrayList<CategoryChild> categoryChildren;
+    String categoryTitle;
 
-    public AllCategories(ArrayList<String> categoryTitle, String Url) {
+    public AllCategories(ArrayList<CategoryChild> categoryChildren, String categoryTitle) {
+        this.categoryChildren = categoryChildren;
         this.categoryTitle = categoryTitle;
-        this.Url = Url;
     }
 
-    public String getUrl() {
-        return Url;
+    public ArrayList<CategoryChild> getCategoryChildren() {
+        return categoryChildren;
     }
 
-    public void setUrl(String url) {
-        Url = url;
+    public void setCategoryChildren(ArrayList<CategoryChild> categoryChildren) {
+        this.categoryChildren = categoryChildren;
     }
 
-    public ArrayList<String> getCategoryTitle() {
+    public String getCategoryTitle() {
         return categoryTitle;
     }
 
-    public void setCategoryTitle(ArrayList<String> categoryTitle) {
+    public void setCategoryTitle(String categoryTitle) {
         this.categoryTitle = categoryTitle;
     }
 }
