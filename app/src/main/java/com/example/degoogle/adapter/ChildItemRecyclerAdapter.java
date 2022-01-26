@@ -55,7 +55,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         Glide.with(mContext).asBitmap().load(mImageUrls.get(position)).into(holder.childImage);
 
-        mDescription.add("Lorem Ipsum9");
+
         holder.appName.setText(mNames.get(position));
         holder.description.setText(mDescription.get(position));
 

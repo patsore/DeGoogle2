@@ -21,11 +21,12 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     private ArrayList<String> mCategoryTitles = new ArrayList<>();
     private ArrayList<String> mDescription = new ArrayList<>();
 
-    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls,  ArrayList<String> titles) {
+    public MainRecyclerAdapter(Context context, ArrayList<String> names, ArrayList<String> imageUrls,  ArrayList<String> titles, ArrayList<String> description) {
         mCategoryTitles = titles;
         mNames = names;
         mImageUrls = imageUrls;
         mContext = context;
+        mDescription = description;
     }
 
     @NonNull

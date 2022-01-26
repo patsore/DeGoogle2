@@ -117,7 +117,7 @@ public class NavBar extends AppCompatActivity {
         CategoryRecycler = findViewById(R.id.recycler_view_home);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         CategoryRecycler.setLayoutManager(layoutManager);
-        mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls, mCategoryTitles);
+        mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls, mCategoryTitles, mDescription);
         CategoryRecycler.setAdapter(mainRecyclerAdapter);
     }
 
