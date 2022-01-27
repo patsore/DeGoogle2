@@ -1,10 +1,18 @@
 package com.example.degoogle.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class CategoryChild {
+
+    @SerializedName("appdescription")
     String mDescription;
+
+    @SerializedName("apptitle")
     String mNames;
+
+    @SerializedName("appicon")
     String mImageUrls;
 
     public CategoryChild(String mDescription, String mNames, String mImageUrls) {
@@ -36,4 +44,6 @@ public class CategoryChild {
     public void setmImageUrls(String mImageUrls) {
         this.mImageUrls = mImageUrls;
     }
+
+
 }

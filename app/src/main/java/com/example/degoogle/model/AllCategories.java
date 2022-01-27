@@ -1,11 +1,17 @@
 package com.example.degoogle.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 public class AllCategories {
 
-    ArrayList<CategoryChild> categoryChildren;
+
+    @SerializedName("categoryname")
     String categoryTitle;
+    @SerializedName("children")
+    ArrayList<CategoryChild> categoryChildren;
+
 
     public AllCategories(ArrayList<CategoryChild> categoryChildren, String categoryTitle) {
         this.categoryChildren = categoryChildren;

@@ -1,10 +1,12 @@
 package com.example.degoogle;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
+import com.example.degoogle.retrofit.jsonPlaceholderApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.degoogle.databinding.ActivityNavBarBinding;
 
 import java.util.ArrayList;
-import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NavBar extends AppCompatActivity {
-
     RecyclerView CategoryRecycler;
     MainRecyclerAdapter mainRecyclerAdapter;
     private ActivityNavBarBinding binding;
@@ -29,7 +35,10 @@ public class NavBar extends AppCompatActivity {
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private ArrayList<String> mCategoryTitles = new ArrayList<>();
     private ArrayList<String> mDescription = new ArrayList<>();
-
+    private String TAG;
+    ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
+    ArrayList<CategoryChild> categoryChildren;
+    ArrayList<String> getmCategoryTitles;
 
 
 
@@ -51,34 +60,84 @@ public class NavBar extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
-//        getImages();
+        retrofit();
 
         getEverything();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+
+
+
+    private void retrofit(){
+
+
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://run.mocky.io/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        jsonPlaceholderApi jsonPlaceholderApi = retrofit.create(com.example.degoogle.retrofit.jsonPlaceholderApi.class);
+
+        Call<ArrayList<AllCategories>> call = jsonPlaceholderApi.allCats();
+        call.enqueue(new Callback<ArrayList<AllCategories>>() {
+            @Override
+            public void onResponse(Call<ArrayList<AllCategories>> call, Response<ArrayList<AllCategories>> response) {
+                if (!response.isSuccessful()){
+                    Log.d(TAG, "onResponse: SUCCESS");
+                    return;
+                }
+                ArrayList<AllCategories> everything = response.body();
+
+                for (AllCategories allCategories: everything) {
+
+                    allCategoriesMain.add(new AllCategories(allCategories.getCategoryChildren(), allCategories.getCategoryTitle()));
+                    setCategoryRecycler(allCategoriesMain);
+
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<AllCategories>> call, Throwable t) {
+                Log.d(TAG, "onFailure: failed");
+            }
+        });
+
+
+
 
 
     }
 
     private void getEverything(){
 
-        ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-
-        categoryChildren.add(new CategoryChild("Lorem Ipsum", "Havasu Falls", "https://i.redd.it/tpsnoz5bzo501.jpg"));
-
-        ArrayList<CategoryChild> categoryChildren1 = new ArrayList<>();
-        categoryChildren1.add(new CategoryChild("Lorem Ipsum2", "Trondheim", "https://i.redd.it/tpsnoz5bzo501.jpg"));
 
 
-        ArrayList<AllCategories> allCategories = new ArrayList<>();
-        allCategories.add(new AllCategories(categoryChildren, "Title123"));
-        allCategories.add(new AllCategories(categoryChildren1, "Title2"));
 
 
-        setCategoryRecycler(allCategories);
+
+
+
+
+
+
+//        ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
+//        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+//
+//
+//        ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
+//        allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
+
+        setCategoryRecycler(allCategoriesMain);
+
+
+
         //УСТАНОВКА ПРИЛОЖЕНИЯ
         // Retrofit Library for application installation
         //Animation should be done as last
@@ -86,55 +145,58 @@ public class NavBar extends AppCompatActivity {
         // onscroll detect how many left ask for more
         //
         // make it one giant index.json
+        //
+
     }
 
 
 
 
 
-//    private void getImages(){
-//        mCategoryTitles.add("Category 1");
-//        mCategoryTitles.add("Category 2");
-//        mCategoryTitles.add("Category 3");
-//
-//
-//        mDescription.add("Lorem Ipsum");
-//        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-//        mNames.add("Havasu Falls");
-//
-//        mDescription.add("Lorem Ipsum2");
-//        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
-//        mNames.add("Trondheim");
-//
-//        mDescription.add("Lorem Ipsum3");
-//        mImageUrls.add("https://i.redd.it/qn7f9oqu7o501.jpg");
-//        mNames.add("Portugal");
-//
-//        mDescription.add("Lorem Ipsum4");
-//        mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
-//        mNames.add("Rocky Mountain National Park");
-//
-//        mDescription.add("Lorem Ipsum5");
-//        mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
-//        mNames.add("Mahahual");
-//
-//        mDescription.add("Lorem Ipsum6");
-//        mImageUrls.add("https://i.redd.it/k98uzl68eh501.jpg");
-//        mNames.add("Frozen Lake");
-//
-//        mDescription.add("Lorem Ipsum7");
-//        mImageUrls.add("https://i.redd.it/glin0nwndo501.jpg");
-//        mNames.add("White Sands Desert");
-//
-//        mDescription.add("Lorem Ipsum8");
-//        mImageUrls.add("https://i.redd.it/obx4zydshg601.jpg");
-//        mNames.add("Austrailia");
-//
-//        mDescription.add("Lorem Ipsum9");
-//        mImageUrls.add("https://i.imgur.com/ZcLLrkY.jpg");
-//        mNames.add("Washington");
-//
-//    }
+
+    private void getImages(){
+        mCategoryTitles.add("Category 1");
+        mCategoryTitles.add("Category 2");
+        mCategoryTitles.add("Category 3");
+
+
+        mDescription.add("Lorem Ipsum");
+        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+        mNames.add("Havasu Falls");
+
+        mDescription.add("Lorem Ipsum2");
+        mImageUrls.add("https://i.redd.it/tpsnoz5bzo501.jpg");
+        mNames.add("Trondheim");
+
+        mDescription.add("Lorem Ipsum3");
+        mImageUrls.add("https://i.redd.it/qn7f9oqu7o501.jpg");
+        mNames.add("Portugal");
+
+        mDescription.add("Lorem Ipsum4");
+        mImageUrls.add("https://i.redd.it/j6myfqglup501.jpg");
+        mNames.add("Rocky Mountain National Park");
+
+        mDescription.add("Lorem Ipsum5");
+        mImageUrls.add("https://i.redd.it/0h2gm1ix6p501.jpg");
+        mNames.add("Mahahual");
+
+        mDescription.add("Lorem Ipsum6");
+        mImageUrls.add("https://i.redd.it/k98uzl68eh501.jpg");
+        mNames.add("Frozen Lake");
+
+        mDescription.add("Lorem Ipsum7");
+        mImageUrls.add("https://i.redd.it/glin0nwndo501.jpg");
+        mNames.add("White Sands Desert");
+
+        mDescription.add("Lorem Ipsum8");
+        mImageUrls.add("https://i.redd.it/obx4zydshg601.jpg");
+        mNames.add("Austrailia");
+
+        mDescription.add("Lorem Ipsum9");
+        mImageUrls.add("https://i.imgur.com/ZcLLrkY.jpg");
+        mNames.add("Washington");
+
+    }
 
 
     private void setCategoryRecycler(ArrayList<AllCategories> allCategories){
