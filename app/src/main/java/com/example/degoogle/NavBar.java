@@ -9,6 +9,7 @@ import com.example.degoogle.model.CategoryChild;
 import com.example.degoogle.retrofit.jsonPlaceholderApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -38,7 +39,7 @@ public class NavBar extends AppCompatActivity {
     private String TAG;
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<CategoryChild> categoryChildren;
-    ArrayList<String> getmCategoryTitles;
+
 
 
 
@@ -60,7 +61,7 @@ public class NavBar extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
-        retrofit();
+       // retrofit();
 
         getEverything();
     }
@@ -127,12 +128,21 @@ public class NavBar extends AppCompatActivity {
 
 
 
-//        ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-//        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
-//
-//
-//        ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
-//        allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
+        ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+
+
+        ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
+        allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
+        allCategoriesMain.add(new AllCategories(categoryChildren, "test2"));
+        allCategoriesMain.add(new AllCategories(categoryChildren, "test2"));
+        allCategoriesMain.add(new AllCategories(categoryChildren, "test2"));
+
 
         setCategoryRecycler(allCategoriesMain);
 
@@ -197,15 +207,35 @@ public class NavBar extends AppCompatActivity {
         mNames.add("Washington");
 
     }
+    private void onScroll(ArrayList<AllCategories> allCategories){
+        ArrayList<CategoryChild> categoryChildren1 = new ArrayList<>();
+        categoryChildren1.add(new CategoryChild("test111", "testsssss", "https://i.imgur.com/ZcLLrkY.jpg"));
+        allCategories.add(new AllCategories(categoryChildren1, "loaded"));
+
+    }
 
 
     private void setCategoryRecycler(ArrayList<AllCategories> allCategories){
         CategoryRecycler = findViewById(R.id.recycler_view_home);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         CategoryRecycler.setLayoutManager(layoutManager);
         mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls, mCategoryTitles, mDescription, allCategories);
         CategoryRecycler.setAdapter(mainRecyclerAdapter);
-    }
+        int lastCompletelyVisibleItemPosition;
+
+            CategoryRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+
+                    if (layoutManager.findLastVisibleItemPosition() <= allCategories.size())
+                    onScroll(allCategories);
+
+                }
+            });
+        }
+
+
+
 
 
 }

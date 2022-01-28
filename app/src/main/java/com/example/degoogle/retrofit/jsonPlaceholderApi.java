@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 public interface jsonPlaceholderApi {
 
 
-    @GET("v3/212af42b-bbb9-454f-be8f-8cbc8c66695b")
+    @GET("index-v1.json")
     Call<ArrayList<AllCategories>> allCats();
 
 }
