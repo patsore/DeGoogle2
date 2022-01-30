@@ -6,7 +6,7 @@ import android.util.Log;
 import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
-import com.example.degoogle.retrofit.jsonPlaceholderApi;
+import com.example.degoogle.retrofit.JsonPlaceholderApi;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +27,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
+@Deprecated()
 public class NavBar extends AppCompatActivity {
     RecyclerView CategoryRecycler;
     MainRecyclerAdapter mainRecyclerAdapter;
@@ -63,7 +63,7 @@ public class NavBar extends AppCompatActivity {
 
        // retrofit();
 
-        getEverything();
+//        getEverything();
     }
 
 
@@ -80,7 +80,7 @@ public class NavBar extends AppCompatActivity {
                 .build();
 
 
-        jsonPlaceholderApi jsonPlaceholderApi = retrofit.create(com.example.degoogle.retrofit.jsonPlaceholderApi.class);
+        JsonPlaceholderApi jsonPlaceholderApi = retrofit.create(JsonPlaceholderApi.class);
 
         Call<ArrayList<AllCategories>> call = jsonPlaceholderApi.allCats();
         call.enqueue(new Callback<ArrayList<AllCategories>>() {
@@ -216,7 +216,7 @@ public class NavBar extends AppCompatActivity {
 
 
     private void setCategoryRecycler(ArrayList<AllCategories> allCategories){
-        CategoryRecycler = findViewById(R.id.recycler_view_home);
+        CategoryRecycler = findViewById(R.id.home_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         CategoryRecycler.setLayoutManager(layoutManager);
         mainRecyclerAdapter = new MainRecyclerAdapter(this, mNames, mImageUrls, mCategoryTitles, mDescription, allCategories);
