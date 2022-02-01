@@ -6,13 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.degoogle.R;
+import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.CategoryChild;
+import com.example.degoogle.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 
@@ -23,6 +30,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     private ArrayList<String> mImageUrls = new ArrayList<>();
     public ArrayList<String> mDescription = new ArrayList<>();
     public ArrayList<CategoryChild> categoryChildren;
+
 
 
     public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription, ArrayList<CategoryChild> categoryChildren) {
@@ -46,14 +54,22 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     @Override
     public void onBindViewHolder(@NonNull ChildItemViewHolder holder, int position) {
 
-
+        HomeFragment homeFragment = new HomeFragment();
 
         Glide.with(mContext).asBitmap().load(categoryChildren.get(position).getmImageUrls()).into(holder.childImage);
 
 
         holder.appName.setText(categoryChildren.get(position).getmNames());
         holder.description.setText(categoryChildren.get(position).getmDescription());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                homeFragment.fragmentChange();
+
+            }
+        });
+        //NavigationGraph Navcontroller onclick
     }
 
     @Override
