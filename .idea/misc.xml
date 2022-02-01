@@ -27,6 +27,15 @@
         <entry key="..\:/DeGoogle2/app/src/main/res/menu/bottom_nav_menu.xml" value="0.4359375" />
         <entry key="..\:/DeGoogle2/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.4036458333333333" />
         <entry key="..\:/DeGoogle2/app/src/main/res/xml/root_preferences.xml" value="0.346875" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/activity_nav_bar.xml" value="0.33" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/child_row_item.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_blank.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_home.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_item_list_dialog_list_dialog.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_item_list_dialog_list_dialog_item.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_updates.xml" value="0.38315217391304346" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/main_recyclerview_item.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/menu/bottom_nav_menu.xml" value="0.425" />
         <entry key="app/src/main/res/font/roboto_mono.xml" value="0.22083333333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.21105072463768115" />
         <entry key="app/src/main/res/layout/activity_nav_bar.xml" value="0.20516304347826086" />

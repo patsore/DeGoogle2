@@ -15,6 +15,8 @@ public class CategoryChild {
     @SerializedName("appicon")
     String mImageUrls;
 
+    //Передавать айди и искать среди прочных
+
     public CategoryChild(String mDescription, String mNames, String mImageUrls) {
         this.mDescription = mDescription;
         this.mNames = mNames;

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.degoogle.R;
@@ -54,7 +55,6 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     }
 
     public static final class MainViewHolder extends RecyclerView.ViewHolder{
-
         TextView categoryTitles;
         RecyclerView childRecycler;
         public MainViewHolder(@NonNull View itemView) {
