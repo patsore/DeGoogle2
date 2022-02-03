@@ -8,20 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.degoogle.R;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.CategoryChild;
-import com.example.degoogle.ui.home.HomeFragment;
 
 import java.util.ArrayList;
 
@@ -34,14 +28,16 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     public ArrayList<CategoryChild> categoryChildren;
     public String TAG = "ChildItemRecyclerAdapter";
 
+    FragmentChange mCallback;
 
 
-    public ChildItemRecyclerAdapter(Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription, ArrayList<CategoryChild> categoryChildren) {
+    public ChildItemRecyclerAdapter(FragmentChange callback, Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription, ArrayList<CategoryChild> categoryChildren) {
         this.mContext = mContext;
         this.mNames = mNames;
         this.mImageUrls = mImageUrls;
         this.mDescription = mDescription;
         this.categoryChildren = categoryChildren;
+        mCallback = callback;
     }
 
     @NonNull
@@ -53,27 +49,20 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull ChildItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        HomeFragment homeFragment = new HomeFragment();
 
         Glide.with(mContext).asBitmap().load(categoryChildren.get(position).getmImageUrls()).into(holder.childImage);
 
 
         holder.appName.setText(categoryChildren.get(position).getmNames());
         holder.description.setText(categoryChildren.get(position).getmDescription());
+
         holder.itemView.setOnClickListener(view -> {
-
-            homeFragment.fragmentChange();
-
+            mCallback.fragmentChange();
             Log.d(TAG, "click: SUCCESS" + position);
-
-
-
         });
-        //NavigationGraph Navcontroller onclick
     }
 
     @Override
@@ -81,11 +70,12 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         return categoryChildren.size();
     }
 
-    public static final class ChildItemViewHolder extends RecyclerView.ViewHolder{
+    public static final class ChildItemViewHolder extends RecyclerView.ViewHolder {
 
         public ImageView childImage;
         public TextView appName;
         public TextView description;
+
         public ChildItemViewHolder(@NonNull View itemView) {
             super(itemView);
             childImage = itemView.findViewById(R.id.child_image);
