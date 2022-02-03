@@ -76,5 +76,7 @@ public class NavBar extends AppCompatActivity{
         // onscroll detect how many left ask for more
         //
         // make it one giant index.json
+        //Разделение слоя Data и UI
+        //Писать Data слой полностью отдельно
         //
 }

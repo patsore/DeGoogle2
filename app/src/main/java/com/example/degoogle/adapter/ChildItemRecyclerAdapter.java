@@ -1,6 +1,8 @@
 package com.example.degoogle.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +32,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     private ArrayList<String> mImageUrls = new ArrayList<>();
     public ArrayList<String> mDescription = new ArrayList<>();
     public ArrayList<CategoryChild> categoryChildren;
+    public String TAG = "ChildItemRecyclerAdapter";
 
 
 
@@ -52,7 +55,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
 
     @Override
-    public void onBindViewHolder(@NonNull ChildItemViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChildItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         HomeFragment homeFragment = new HomeFragment();
 
@@ -61,13 +64,14 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         holder.appName.setText(categoryChildren.get(position).getmNames());
         holder.description.setText(categoryChildren.get(position).getmDescription());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.itemView.setOnClickListener(view -> {
 
-                homeFragment.fragmentChange();
+            homeFragment.fragmentChange();
 
-            }
+            Log.d(TAG, "click: SUCCESS" + position);
+
+
+
         });
         //NavigationGraph Navcontroller onclick
     }

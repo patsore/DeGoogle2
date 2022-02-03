@@ -1,22 +1,20 @@
 package com.example.degoogle.ui.home;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.app.Activity;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.R;
@@ -31,7 +29,6 @@ import java.util.Objects;
 
 public class HomeFragment extends Fragment implements FragmentChange {
 
-    private String TAG = "HomeFragment";
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
 
@@ -42,18 +39,23 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<CategoryChild> categoryChildren;
     ArrayList<AllCategories> list = new ArrayList<>();
+    Activity activity = getActivity();
+    NavController navController = null;
 
 
     int count = 0;
     FragmentChange fragmentChanger;
+
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
 
 
         return root;
@@ -65,7 +67,9 @@ public class HomeFragment extends Fragment implements FragmentChange {
         getEverything();
         initObserver();
         initListeners();
-       setCategoryRecycler(list);
+        setCategoryRecycler(list);
+
+//TODO change emulator start settings
 
     }
 
@@ -77,8 +81,22 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
 
         public void fragmentChange() {
+//            if (activity != null){
 
-            NavHostFragment.findNavController(this).navigate(R.id.action_navigation_home_to_navigation_updates);
+//                Navigation.findNavController(requireView()).navigate(R.id.action_navigation_home_to_navigation_updates);
+//                navController.navigate(R.id.action_navigation_home_to_navigation_updates);
+
+
+//            }
+
+//
+//            Toast toast = Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT);
+//            Log.d(TAG, "fragmentChange: SUCCESS0");
+//            toast.show()
+            String TAG = "HomeFragment";
+            Log.d(TAG, "fragmentChange: SUCCESS");
+
+
 
         }
 
@@ -94,7 +112,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
                     onScroll();
                     int pos = (Objects.requireNonNull(binding.homeList.getAdapter()).getItemCount()!=0 &&binding.homeList.getAdapter().getItemCount()-3>0)?
                             binding.homeList.getAdapter().getItemCount()-3:1;
-//                    binding.homeList.scrollToPosition(pos);
+//
                 }
             }
         });
@@ -156,8 +174,13 @@ public class HomeFragment extends Fragment implements FragmentChange {
         public void addData(ArrayList<AllCategories> list, ArrayList<CategoryChild> children){
             list.clear();
             list.add(new AllCategories(children, "loaded " + count));
+            count ++;
+            list.add(new AllCategories(children, "loaded " + count));
             allCategoriesMain.addAll(list);
-            Objects.requireNonNull(binding.homeList.getAdapter()).notifyDataSetChanged();
+            Objects.requireNonNull(binding.homeList.getAdapter()).notifyItemChanged(allCategoriesMain.size());
         }
+
+
+
 
 }
