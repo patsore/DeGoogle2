@@ -29,8 +29,9 @@
         <entry key="..\:/DeGoogle2/app/src/main/res/xml/root_preferences.xml" value="0.346875" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/activity_nav_bar.xml" value="0.25" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/child_row_item.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_app_info.xml" value="0.33" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_blank.xml" value="0.22708333333333333" />
-        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_home.xml" value="0.22708333333333333" />
+        <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_home.xml" value="0.5" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_item_list_dialog_list_dialog.xml" value="0.22708333333333333" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_item_list_dialog_list_dialog_item.xml" value="0.22708333333333333" />
         <entry key="..\:/test/DeGoogle2/app/src/main/res/layout/fragment_updates.xml" value="0.38315217391304346" />
@@ -49,7 +50,7 @@
   <component name="ProjectPlainTextFileTypeManager">
     <file url="file://$PROJECT_DIR$/app/src/main/res/xml/root_preferences.xml" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

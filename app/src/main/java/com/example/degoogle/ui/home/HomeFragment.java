@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.R;
@@ -20,6 +22,7 @@ import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -39,7 +42,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> list = new ArrayList<>();
 
     int count = 0;
-
+    int stateRestoredCalledTimes = 0;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -48,26 +51,49 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getEverything();
         initObserver();
         initListeners();
-        setCategoryRecycler(list);
-
-//TODO change emulator start settings
+        if (stateRestoredCalledTimes == 0){
+            getEverything();
+        }
+//        if (binding.homeList.getAdapter().getItemCount() == 0){
+//        }
 
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d(TAG, "onViewStateRestored: stateRESTROED");
+        stateRestoredCalledTimes ++;
+    }
+
     public void fragmentChange() {
-        findNavController(this).navigate(R.id.action_navigation_home_to_navigation_updates);
+        findNavController(this).navigate(R.id.nav_to_app_info);
         Log.d(TAG, "fragmentChange: SUCCESS");
+        findNavController(this).addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                if(destination.getId() == R.id.app_info) {
+                    requireActivity().findViewById(R.id.nav_view).setVisibility(View.GONE);
+//
+                    Log.d(TAG, "onDestinationChanged: success");
+                } else {
+
+
+                    requireActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+//
+                    Log.d(TAG, "onDestinationChanged: failed");
+                }
+            }
+        });
+
     }
 
 
@@ -97,13 +123,14 @@ public class HomeFragment extends Fragment implements FragmentChange {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
     }
 
     //DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback
     //DivCallback
     private void getEverything() {
         ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-        //
+        //TODO FIRESTORE IMPLEMENTATION
 
         //NavGraph
         categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));

@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.degoogle.R;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.CategoryChild;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -62,8 +63,14 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         holder.itemView.setOnClickListener(view -> {
             mCallback.fragmentChange();
             Log.d(TAG, "click: SUCCESS" + position);
+
         });
     }
+
+
+
+
+
 
     @Override
     public int getItemCount() {
@@ -75,7 +82,6 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         public ImageView childImage;
         public TextView appName;
         public TextView description;
-
         public ChildItemViewHolder(@NonNull View itemView) {
             super(itemView);
             childImage = itemView.findViewById(R.id.child_image);
