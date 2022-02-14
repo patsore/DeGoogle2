@@ -1,22 +1,22 @@
 package com.example.degoogle.model;
 
+import com.google.firebase.firestore.PropertyName;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
 public class CategoryChild {
-
     @SerializedName("appdescription")
     String mDescription;
-
-    @SerializedName("apptitle")
+    @PropertyName("name")
     String mNames;
-
-    @SerializedName("appicon")
+    @PropertyName("icon")
     String mImageUrls;
 
     //Передавать айди и искать среди прочных
+    public CategoryChild(){
 
+    }
     public CategoryChild(String mDescription, String mNames, String mImageUrls) {
         this.mDescription = mDescription;
         this.mNames = mNames;

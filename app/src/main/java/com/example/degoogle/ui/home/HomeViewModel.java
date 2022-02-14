@@ -46,6 +46,8 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
+
+
     public LiveData<ArrayList<AllCategories>> getAllCategories(){return allCategories;}
 
 }

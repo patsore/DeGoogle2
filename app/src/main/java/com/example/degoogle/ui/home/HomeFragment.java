@@ -3,6 +3,8 @@ package com.example.degoogle.ui.home;
 import static androidx.navigation.fragment.NavHostFragment.findNavController;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +24,18 @@ import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
-import com.google.android.material.navigation.NavigationView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public class HomeFragment extends Fragment implements FragmentChange {
     private static final String TAG = "HomeFragment";
@@ -40,7 +50,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<CategoryChild> categoryChildren;
     ArrayList<AllCategories> list = new ArrayList<>();
-
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     int count = 0;
     int stateRestoredCalledTimes = 0;
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -59,11 +69,9 @@ public class HomeFragment extends Fragment implements FragmentChange {
         super.onViewCreated(view, savedInstanceState);
         initObserver();
         initListeners();
-        if (stateRestoredCalledTimes == 0){
             getEverything();
-        }
-//        if (binding.homeList.getAdapter().getItemCount() == 0){
-//        }
+
+        getSome();
 
     }
 
@@ -77,20 +85,17 @@ public class HomeFragment extends Fragment implements FragmentChange {
     public void fragmentChange() {
         findNavController(this).navigate(R.id.nav_to_app_info);
         Log.d(TAG, "fragmentChange: SUCCESS");
-        findNavController(this).addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                if(destination.getId() == R.id.app_info) {
-                    requireActivity().findViewById(R.id.nav_view).setVisibility(View.GONE);
+        findNavController(this).addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if(destination.getId() == R.id.app_info) {
+                requireActivity().findViewById(R.id.nav_view).setVisibility(View.GONE);
 //
-                    Log.d(TAG, "onDestinationChanged: success");
-                } else {
+                Log.d(TAG, "onDestinationChanged: success");
+            } else {
 
 
-                    requireActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
+                requireActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
 //
-                    Log.d(TAG, "onDestinationChanged: failed");
-                }
+                Log.d(TAG, "onDestinationChanged: failed");
             }
         });
 
@@ -105,9 +110,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
                 if (!recyclerView.canScrollVertically(1)) {
                     count++;
                     onScroll();
-                    int pos = (Objects.requireNonNull(binding.homeList.getAdapter()).getItemCount() != 0 && binding.homeList.getAdapter().getItemCount() - 3 > 0) ?
-                            binding.homeList.getAdapter().getItemCount() - 3 : 1;
-//
+                    //
                 }
             }
         });
@@ -175,5 +178,53 @@ public class HomeFragment extends Fragment implements FragmentChange {
         Objects.requireNonNull(binding.homeList.getAdapter()).notifyItemChanged(allCategoriesMain.size());
     }
 
+    private void firebaseIntegration(){
+    db.collection("categories")
+            .document("messaging")
+            .collection("apps")
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document :
+                                Objects.requireNonNull(task.getResult())) {
+                            Log.d(TAG, "firebase complete");
+                            CategoryChild children = new CategoryChild();
+                            children = document.toObject(CategoryChild.class);
+                            Log.d(TAG, "onComplete: " + children.getmNames());
+                        }
+                    } else {
+                        Log.d(TAG, "onComplete: failed");
+
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+        }
+    });
+
+//        list.add(new AllCategories(db.collection("categories").document("Messaging Apps"), "Messaging Apps"));
+
+    }
+    private void getSome(){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+
+            //Background work here
+            firebaseIntegration();
+
+
+            handler.post(() -> {
+                // pass to main thread
+                Log.d(TAG, "getSome: handler:post");
+//                    mText.setValue(buffer.toString())
+            });
+        });
+    }
 
 }

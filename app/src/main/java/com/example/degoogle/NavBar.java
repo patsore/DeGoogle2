@@ -30,7 +30,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-@Deprecated()
+
 public class NavBar extends AppCompatActivity{
     RecyclerView CategoryRecycler;
     MainRecyclerAdapter mainRecyclerAdapter;
