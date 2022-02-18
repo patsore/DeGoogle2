@@ -24,13 +24,13 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private Context mContext;
-    private ArrayList<String> mCategoryTitles = new ArrayList<>();
+
     private ArrayList<String> mDescription = new ArrayList<>();
     private ArrayList<AllCategories> allCategories;
     FragmentChange fragmentChange;
 
-    public MainRecyclerAdapter(FragmentChange callback, Context context, ArrayList<String> names, ArrayList<String> imageUrls, ArrayList<String> titles, ArrayList<String> description, ArrayList<AllCategories> allCategories) {
-        mCategoryTitles = titles;
+    public MainRecyclerAdapter(FragmentChange callback, Context context, ArrayList<String> names, ArrayList<String> imageUrls, ArrayList<String> description, ArrayList<AllCategories> allCategories) {
+
         mNames = names;
         mImageUrls = imageUrls;
         mContext = context;

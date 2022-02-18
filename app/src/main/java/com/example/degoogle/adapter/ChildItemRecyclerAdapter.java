@@ -38,7 +38,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         this.mImageUrls = mImageUrls;
         this.mDescription = mDescription;
         this.categoryChildren = categoryChildren;
-        mCallback = callback;
+        this.mCallback = callback;
     }
 
     @NonNull
@@ -61,9 +61,10 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         holder.description.setText(categoryChildren.get(position).getmDescription());
 
         holder.itemView.setOnClickListener(view -> {
-            mCallback.fragmentChange();
-            Log.d(TAG, "click: SUCCESS" + position);
+            //TODO ID system
+            mCallback.fragmentChange(position);
 
+            Log.d(TAG, "click: SUCCESS" + position);
         });
     }
 

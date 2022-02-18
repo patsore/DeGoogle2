@@ -78,5 +78,5 @@ public class NavBar extends AppCompatActivity{
         // make it one giant index.json
         //Разделение слоя Data и UI
         //Писать Data слой полностью отдельно
-        //
+        //TODO hide show method
 }

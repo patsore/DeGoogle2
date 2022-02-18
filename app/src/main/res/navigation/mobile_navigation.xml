@@ -42,6 +42,11 @@
         android:id="@+id/app_info"
         android:name="com.example.degoogle.AppInfoFragment"
         android:label="fragment_app_info"
-        tools:layout="@layout/fragment_app_info" />
+        tools:layout="@layout/fragment_app_info" >
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 
 </navigation>

@@ -28,6 +28,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     private void getCategories() {
+
         allCategories = new MutableLiveData<>();
         Retrofit retrofit = RetrofitClient.getInstance();
         JsonPlaceholderApi api = retrofit.create(JsonPlaceholderApi.class);
@@ -45,6 +46,7 @@ public class HomeViewModel extends ViewModel {
             }
         });
     }
+
 
 
 
