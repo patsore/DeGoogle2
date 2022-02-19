@@ -1,49 +1,26 @@
 package com.example.degoogle;
 
+import static androidx.navigation.fragment.NavHostFragment.findNavController;
+
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 
-import com.example.degoogle.adapter.MainRecyclerAdapter;
-import com.example.degoogle.interfaces.FragmentChange;
-import com.example.degoogle.model.AllCategories;
-import com.example.degoogle.model.CategoryChild;
-import com.example.degoogle.retrofit.JsonPlaceholderApi;
-import com.example.degoogle.ui.home.HomeFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.databinding.ActivityNavBarBinding;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
+import java.util.Objects;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+public class NavBar extends AppCompatActivity {
 
-public class NavBar extends AppCompatActivity{
-    RecyclerView CategoryRecycler;
-    MainRecyclerAdapter mainRecyclerAdapter;
     private ActivityNavBarBinding binding;
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
-    private ArrayList<String> mCategoryTitles = new ArrayList<>();
-    private ArrayList<String> mDescription = new ArrayList<>();
     private String TAG;
-    ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
-    ArrayList<CategoryChild> categoryChildren;
-
-
 
 
     @Override
@@ -64,19 +41,28 @@ public class NavBar extends AppCompatActivity{
         NavigationUI.setupWithNavController(binding.navView, navController);
 
 
+    }
 
+    public void hideNavBar(NavDestination destination) {
 
+           if (destination.getId() == R.id.app_info) {
+                binding.navView.setVisibility(View.GONE);
+            } else {
+                binding.navView.setVisibility(View.VISIBLE);
+            }
 
 
     }
-        //УСТАНОВКА ПРИЛОЖЕНИЯ
-        //TODO Retrofit Library for application installation
-        //Animation should be done as last
-        //
-        // onscroll detect how many left ask for more
-        //
-        // make it one giant index.json
-        //Разделение слоя Data и UI
-        //Писать Data слой полностью отдельно
-        //TODO hide show method
+
+
+    //УСТАНОВКА ПРИЛОЖЕНИЯ
+    //TODO Retrofit Library for application installation
+    //Animation should be done as last
+    //
+    // onscroll detect how many left ask for more
+    //
+    // make it one giant index.json
+    //Разделение слоя Data и UI
+    //Писать Data слой полностью отдельно
+    //TODO hide show method
 }

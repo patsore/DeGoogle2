@@ -12,15 +12,17 @@ public class CategoryChild {
     String mNames;
     @PropertyName("icon")
     String mImageUrls;
+    int ItemPosition;
 
     //Передавать айди и искать среди прочных
     public CategoryChild(){
 
     }
-    public CategoryChild(String mDescription, String mNames, String mImageUrls) {
+    public CategoryChild(String mDescription, String mNames, String mImageUrls, int mItemPosition) {
         this.mDescription = mDescription;
         this.mNames = mNames;
         this.mImageUrls = mImageUrls;
+        this.ItemPosition = mItemPosition;
     }
 
     public String getmDescription() {
@@ -47,5 +49,11 @@ public class CategoryChild {
         this.mImageUrls = mImageUrls;
     }
 
+    public int getItemPosition() {
+        return ItemPosition;
+    }
 
+    public void setItemPosition(int itemPosition) {
+        ItemPosition = itemPosition;
+    }
 }

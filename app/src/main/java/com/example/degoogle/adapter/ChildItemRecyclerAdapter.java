@@ -1,6 +1,7 @@
 package com.example.degoogle.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     public ArrayList<String> mDescription = new ArrayList<>();
     public ArrayList<CategoryChild> categoryChildren;
     public String TAG = "ChildItemRecyclerAdapter";
+    public int ItemPosition;
 
     FragmentChange mCallback;
 

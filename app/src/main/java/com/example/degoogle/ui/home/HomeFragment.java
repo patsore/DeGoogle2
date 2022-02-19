@@ -15,23 +15,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Transition;
 
-import com.example.degoogle.R;
+import com.example.degoogle.NavBar;
 import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.AllCategories;
-import com.example.degoogle.model.Categories;
 import com.example.degoogle.model.CategoryChild;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -51,8 +49,10 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<AllCategories> list = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<String, ArrayList<CategoryChild>> categories = new HashMap<>();
+    Map<String, Map<Integer, CategoryChild>> categoriestest = new HashMap<>();
     int count = 0;
-
+    String category = "";
     ArrayList<CategoryChild> messaging = new ArrayList<>();
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,37 +70,24 @@ public class HomeFragment extends Fragment implements FragmentChange {
         initObserver();
         initListeners();
         getEverything();
-
         getSome();
+
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-
     }
 
     public void fragmentChange(int appId) {
-        int id = appId;
         HomeFragmentDirections.NavToAppInfo action = HomeFragmentDirections.navToAppInfo();
-        action.setId(id);
+        action.setId(appId);
         findNavController(this).navigate(action);
         Log.d(TAG, "fragmentChange: SUCCESS");
-
-
-        findNavController(this).addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.app_info) {
-                requireActivity().findViewById(R.id.nav_view).setVisibility(View.GONE);
-//
-                Log.d(TAG, "onDestinationChanged: success " + id);
-            } else {
-
-
-                requireActivity().findViewById(R.id.nav_view).setVisibility(View.VISIBLE);
-//
-                Log.d(TAG, "onDestinationChanged: failed " + id);
-            }
+        findNavController(this).addOnDestinationChangedListener((navController, navDestination, bundle) -> {
+            ((NavBar) getActivity()).hideNavBar(navDestination);
         });
+
 
     }
 
@@ -113,7 +100,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
                 if (!recyclerView.canScrollVertically(1)) {
                     count++;
                     onScroll();
-                    //
+
                 }
             }
         });
@@ -137,8 +124,8 @@ public class HomeFragment extends Fragment implements FragmentChange {
     private void getEverything() {
         //NavGraph
         ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.imgur.com/ZcLLrkY.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg", 2));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.imgur.com/ZcLLrkY.jpg", 1));
         ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
         allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
 
@@ -159,52 +146,48 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
 
         firebaseIntegration();
-        addData(list, messaging);
+//        addData();
+
     }
 
 
     //adds data to recyclerview
-    public void addData(ArrayList<AllCategories> list, ArrayList<CategoryChild> children) {
-//        list.clear();
+    public void addData() {
         //I need to check if my downloaded category title corresponds with the categories title, and only load that item into it in case it does
 
-//        list.add(new AllCategories(children, "loaded " + count));
-        count ++;
 
+        list.add(new AllCategories(categories.get(category), category));
         allCategoriesMain.addAll(list);
         Objects.requireNonNull(binding.homeList.getAdapter()).notifyItemChanged(allCategoriesMain.size());
-    }
-
-    private void getCategory(){
-
-
-        db.collection("categories").document("category_names").get().addOnSuccessListener(documentSnapshot -> {
-            Categories categories = new Categories();
-            categories = documentSnapshot.toObject(Categories.class);
-
-        });
-
-
     }
 
     private void firebaseIntegration() {
         db.collection("messaging")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            String category = document.getString("category");
+                .addOnCompleteListener(task -> {
+                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+                        category = document.getString("category");
+                        long longItemPos = document.getLong("posInRow");
+                        int itemPos = Math.toIntExact(longItemPos);
 
 
-                            Map<String, ArrayList<CategoryChild>> categories = new HashMap<>();
-                            categories.put(category, new ArrayList<CategoryChild>(Arrays.asList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")))));
-                            Log.d(TAG, "onComplete: " + categories.toString());
-                            list.add(new AllCategories(categories.get(category), category));
+                        if (!categories.containsKey(category)) {
+                            categories.put(category, new ArrayList<CategoryChild>(Arrays.asList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon"), Math.toIntExact(document.getLong("posInRow"))))));
+                        }else{
 
+                            categories.get(category).add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon"), Math.toIntExact(document.getLong("posInRow"))));
 
+                        }
+                        Log.d(TAG, "onComplete: " + categories);
 
+                        Objects.requireNonNull(categories.get(category)).sort(new Comparator<CategoryChild>() {
+                            @Override
+                            public int compare(CategoryChild categoryChild, CategoryChild t1) {
+                                return Integer.compare(categoryChild.getItemPosition(), t1.getItemPosition());
+                            }
+                        });
 
+                        addData();
 
 
 
@@ -217,10 +200,6 @@ public class HomeFragment extends Fragment implements FragmentChange {
 ////                                list.get(categoryId).getCategoryChildren().add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
 //                            }
 
-                            ArrayList<CategoryChild> children1312 = new ArrayList<>();
-                            children1312.add(document.toObject(CategoryChild.class));
-
-                        }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
