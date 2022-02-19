@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.Transition;
 
 import com.example.degoogle.NavBar;
 import com.example.degoogle.adapter.MainRecyclerAdapter;
@@ -29,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +50,6 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> list = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     Map<String, ArrayList<CategoryChild>> categories = new HashMap<>();
-    Map<String, Map<Integer, CategoryChild>> categoriestest = new HashMap<>();
     int count = 0;
     String category = "";
     ArrayList<CategoryChild> messaging = new ArrayList<>();
@@ -180,7 +179,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
                         }
                         Log.d(TAG, "onComplete: " + categories);
 
-                        Objects.requireNonNull(categories.get(category)).sort(new Comparator<CategoryChild>() {
+                        Collections.sort(categories.get(category), new Comparator<CategoryChild>() {
                             @Override
                             public int compare(CategoryChild categoryChild, CategoryChild t1) {
                                 return Integer.compare(categoryChild.getItemPosition(), t1.getItemPosition());
