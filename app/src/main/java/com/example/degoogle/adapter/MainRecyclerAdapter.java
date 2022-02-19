@@ -51,6 +51,9 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
         holder.categoryTitles.setText(allCategories.get(position).getCategoryTitle());
         setCatItemRecycler(holder.childRecycler, allCategories.get(position).getCategoryChildren());
+
+
+
     }
 
     @Override

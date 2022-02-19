@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavDestination;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.R;
@@ -22,16 +21,19 @@ import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.AllCategories;
+import com.example.degoogle.model.Categories;
 import com.example.degoogle.model.CategoryChild;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,17 +47,13 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
-    private ArrayList<String> mCategoryTitles = new ArrayList<>();
     private ArrayList<String> mDescription = new ArrayList<>();
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
-    ArrayList<CategoryChild> categoryChildren;
     ArrayList<AllCategories> list = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     int count = 0;
-    int stateRestoredCalledTimes = 0;
-    int categoryId;
+
     ArrayList<CategoryChild> messaging = new ArrayList<>();
-    String title;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -79,8 +77,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.d(TAG, "onViewStateRestored: stateRESTROED");
-        stateRestoredCalledTimes++;
+
     }
 
     public void fragmentChange(int appId) {
@@ -178,31 +175,51 @@ public class HomeFragment extends Fragment implements FragmentChange {
         Objects.requireNonNull(binding.homeList.getAdapter()).notifyItemChanged(allCategoriesMain.size());
     }
 
+    private void getCategory(){
 
+
+        db.collection("categories").document("category_names").get().addOnSuccessListener(documentSnapshot -> {
+            Categories categories = new Categories();
+            categories = documentSnapshot.toObject(Categories.class);
+
+        });
+
+
+    }
 
     private void firebaseIntegration() {
-
         db.collection("messaging")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         for (QueryDocumentSnapshot document : task.getResult()) {
-
-                            if (document.getLong("category") != null){
-                                long categoryId1 = document.getLong("category");
-                                categoryId = Math.toIntExact(categoryId1);
-                                Log.d(TAG, "onComplete: " + categoryId1);
-                                if (categoryId == categoryId1){
-                                    list.add(0 ,new AllCategories(messaging, "loaded" + categoryId));
-                                    list.add(1 ,new AllCategories(messaging, "loaded" + categoryId));
-                                    list.add(2 ,new AllCategories(messaging, "loaded" + categoryId));
-                                    list.add(3 ,new AllCategories(messaging, "loaded" + categoryId));
-                                    list.get(categoryId).getCategoryChildren().add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
+                            String category = document.getString("category");
 
 
-                                }
-                            }
+                            Map<String, ArrayList<CategoryChild>> categories = new HashMap<>();
+                            categories.put(category, new ArrayList<CategoryChild>(Arrays.asList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")))));
+                            Log.d(TAG, "onComplete: " + categories.toString());
+                            list.add(new AllCategories(categories.get(category), category));
+
+
+
+
+
+
+
+
+
+
+
+
+//                            switch (){
+////                                list.get(categoryId).getCategoryChildren().add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
+//                            }
+
+                            ArrayList<CategoryChild> children1312 = new ArrayList<>();
+                            children1312.add(document.toObject(CategoryChild.class));
+
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
