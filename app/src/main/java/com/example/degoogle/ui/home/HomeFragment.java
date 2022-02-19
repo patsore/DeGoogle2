@@ -49,7 +49,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
     ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<AllCategories> list = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<String, ArrayList<CategoryChild>> categories = new HashMap<>();
+    Map<String,ArrayList<CategoryChild>> categories = new HashMap<>();
     int count = 0;
     String category = "";
     ArrayList<CategoryChild> messaging = new ArrayList<>();
@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
         initListeners();
         getEverything();
         getSome();
-
+        firebaseIntegration();
     }
 
     @Override
@@ -99,7 +99,6 @@ public class HomeFragment extends Fragment implements FragmentChange {
                 if (!recyclerView.canScrollVertically(1)) {
                     count++;
                     onScroll();
-
                 }
             }
         });
@@ -123,8 +122,8 @@ public class HomeFragment extends Fragment implements FragmentChange {
     private void getEverything() {
         //NavGraph
         ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg", 2));
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.imgur.com/ZcLLrkY.jpg", 1));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
+        categoryChildren.add(new CategoryChild("test", "test", "https://i.imgur.com/ZcLLrkY.jpg"));
         ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
         allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
 
@@ -144,7 +143,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
 
 
-        firebaseIntegration();
+
 //        addData();
 
     }
@@ -161,6 +160,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
     }
 
     private void firebaseIntegration() {
+
         db.collection("messaging")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -171,21 +171,23 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
 
                         if (!categories.containsKey(category)) {
-                            categories.put(category, new ArrayList<CategoryChild>(Arrays.asList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon"), Math.toIntExact(document.getLong("posInRow"))))));
-                        }else{
 
-                            categories.get(category).add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon"), Math.toIntExact(document.getLong("posInRow"))));
+                                categories.put(category, new ArrayList<CategoryChild>(Collections.singletonList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")))));
+
+                        }else{
+                            if (!Objects.requireNonNull(categories.get(category)).contains(document.toObject(CategoryChild.class))){
+                                Objects.requireNonNull(categories.get(category)).add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
+                            }
 
                         }
-                        Log.d(TAG, "onComplete: " + categories);
 
-                        Collections.sort(categories.get(category), new Comparator<CategoryChild>() {
-                            @Override
-                            public int compare(CategoryChild categoryChild, CategoryChild t1) {
-                                return Integer.compare(categoryChild.getItemPosition(), t1.getItemPosition());
-                            }
-                        });
-
+//                        Objects.requireNonNull(categories.get(category)).sort(new Comparator<CategoryChild>() {
+//                            @Override
+//                            public int compare(CategoryChild categoryChild, CategoryChild t1) {
+//                                return Integer.compare(categoryChild.getItemPosition(), t1.getItemPosition());
+//                            }
+//                        });
+                        Log.d(TAG, "firebaseIntegration: ran times");
                         addData();
 
 
@@ -204,8 +206,8 @@ public class HomeFragment extends Fragment implements FragmentChange {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "onFailure: getting firebase failed");
-                
-                
+
+
             }
         });
 
