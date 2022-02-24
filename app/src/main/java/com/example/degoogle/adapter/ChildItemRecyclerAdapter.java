@@ -1,7 +1,6 @@
 package com.example.degoogle.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.example.degoogle.R;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.CategoryChild;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -56,14 +54,14 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     public void onBindViewHolder(@NonNull ChildItemViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
 
-        Glide.with(mContext).asBitmap().load(categoryChildren.get(position).getmImageUrls()).into(holder.childImage);
+        Glide.with(mContext).asBitmap().load(categoryChildren.get(position).getIcon()).into(holder.childImage);
 
 
-        holder.appName.setText(categoryChildren.get(position).getmNames());
-        holder.description.setText(categoryChildren.get(position).getmDescription());
+        holder.appName.setText(categoryChildren.get(position).getName());
+        holder.description.setText(categoryChildren.get(position).getDescription());
 
         holder.itemView.setOnClickListener(view -> {
-            //TODO ID system
+            //`TODO ID system
             mCallback.fragmentChange(position);
 
             Log.d(TAG, "click: SUCCESS" + position);

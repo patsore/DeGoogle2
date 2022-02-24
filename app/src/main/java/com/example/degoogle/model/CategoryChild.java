@@ -1,51 +1,66 @@
 package com.example.degoogle.model;
 
 import com.google.firebase.firestore.PropertyName;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.ArrayList;
 
 public class CategoryChild {
-    @SerializedName("appdescription")
-    String mDescription;
+    @PropertyName("description")
+    String description;
     @PropertyName("name")
-    String mNames;
+    String name;
     @PropertyName("icon")
-    String mImageUrls;
+    String icon;
+    int appId;
+    String category = "";
 
     //Передавать айди и искать среди прочных
     public CategoryChild(){
 
     }
-    public CategoryChild(String mDescription, String mNames, String mImageUrls) {
-        this.mDescription = mDescription;
-        this.mNames = mNames;
-        this.mImageUrls = mImageUrls;
+    public CategoryChild(String description, String name, String icon, int appId, String category) {
+        this.description = description;
+        this.name = name;
+        this.icon = icon;
+        this.appId = appId;
+        this.category = category;
     }
 
-    public String getmDescription() {
-        return mDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setmDescription(String mDescription) {
-        this.mDescription = mDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getmNames() {
-        return mNames;
+    public String getName() {
+        return name;
     }
 
-    public void setmNames(String mNames) {
-        this.mNames = mNames;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getmImageUrls() {
-        return mImageUrls;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setmImageUrls(String mImageUrls) {
-        this.mImageUrls = mImageUrls;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
+    public int getAppId() {
+        return appId;
+    }
 
+    public void setAppId(int appId) {
+        this.appId = appId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

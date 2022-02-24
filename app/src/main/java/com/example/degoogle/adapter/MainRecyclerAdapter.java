@@ -1,6 +1,7 @@
 package com.example.degoogle.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,19 +18,22 @@ import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder> {
 
+    private static final String TAG = "MainRecyclerAdapter";
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private Context mContext;
 
     private ArrayList<String> mDescription = new ArrayList<>();
-    private ArrayList<AllCategories> allCategories;
+    private Map<String,ArrayList<CategoryChild>> allCategories;
     FragmentChange fragmentChange;
+    ArrayList<String> categories;
 
-    public MainRecyclerAdapter(FragmentChange callback, Context context, ArrayList<String> names, ArrayList<String> imageUrls, ArrayList<String> description, ArrayList<AllCategories> allCategories) {
+    public MainRecyclerAdapter(FragmentChange callback, Context context, ArrayList<String> names, ArrayList<String> imageUrls, ArrayList<String> description, Map<String,ArrayList<CategoryChild>> allCategories) {
 
         mNames = names;
         mImageUrls = imageUrls;
@@ -43,14 +47,17 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_recyclerview_item, parent, false);
+        categories = new ArrayList<>(allCategories.keySet());
         return new MainViewHolder(view);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        holder.categoryTitles.setText(allCategories.get(position).getCategoryTitle());
-        setCatItemRecycler(holder.childRecycler, allCategories.get(position).getCategoryChildren());
+        Log.d(TAG, "onBindViewHolder: " + allCategories.keySet());
+
+        holder.categoryTitles.setText(categories.get(position));
+        setCatItemRecycler(holder.childRecycler, allCategories.get(categories.get(position)));
 
 
 

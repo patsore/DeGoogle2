@@ -1,7 +1,6 @@
-package com.example.degoogle.retrofit;
+package com.example.degoogle.network;
 
 import com.example.degoogle.model.AllCategories;
-import com.example.degoogle.model.CategoryChild;
 
 import java.util.ArrayList;
 

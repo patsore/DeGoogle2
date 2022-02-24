@@ -22,14 +22,9 @@ import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -46,11 +41,11 @@ public class HomeFragment extends Fragment implements FragmentChange {
     private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private ArrayList<String> mDescription = new ArrayList<>();
-    ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
     ArrayList<AllCategories> list = new ArrayList<>();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    Map<String,ArrayList<CategoryChild>> categories = new HashMap<>();
-    int count = 0;
+    Map<String,ArrayList<CategoryChild>> allCategoriesMain = new HashMap<>();
+
+    Map<Integer,ArrayList<CategoryChild>> apps = new HashMap<>();
     String category = "";
     ArrayList<CategoryChild> messaging = new ArrayList<>();
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,9 +63,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
         super.onViewCreated(view, savedInstanceState);
         initObserver();
         initListeners();
-        getEverything();
         getSome();
-        firebaseIntegration();
     }
 
     @Override
@@ -84,7 +77,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
         findNavController(this).navigate(action);
         Log.d(TAG, "fragmentChange: SUCCESS");
         findNavController(this).addOnDestinationChangedListener((navController, navDestination, bundle) -> {
-            ((NavBar) getActivity()).hideNavBar(navDestination);
+            ((NavBar) requireActivity()).hideNavBar(navDestination);
         });
 
 
@@ -97,7 +90,7 @@ public class HomeFragment extends Fragment implements FragmentChange {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(1)) {
-                    count++;
+
                     onScroll();
                 }
             }
@@ -106,7 +99,9 @@ public class HomeFragment extends Fragment implements FragmentChange {
     }
 
     private void initObserver() {
-        homeViewModel.getAllCategories().observe(getViewLifecycleOwner(), this::setCategoryRecycler);
+        homeViewModel.getFirebaseData().observe(getViewLifecycleOwner(), this::setCategoryRecycler);
+
+        Log.d(TAG, "initObserver: observerserserserserse" + homeViewModel.getFirebaseData());
     }
 
 
@@ -119,28 +114,15 @@ public class HomeFragment extends Fragment implements FragmentChange {
 
     //DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback//DivCallback
     //DivCallback
-    private void getEverything() {
-        //NavGraph
-        ArrayList<CategoryChild> categoryChildren = new ArrayList<>();
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.redd.it/qn7f9oqu7o501.jpg"));
-        categoryChildren.add(new CategoryChild("test", "test", "https://i.imgur.com/ZcLLrkY.jpg"));
-        ArrayList<AllCategories> allCategoriesMain = new ArrayList<>();
-        allCategoriesMain.add(new AllCategories(categoryChildren, "test"));
 
+    private void setCategoryRecycler(Map<String,ArrayList<CategoryChild>> categories) {
 
-        setCategoryRecycler(allCategoriesMain);
-    }
-
-    private void setCategoryRecycler(ArrayList<AllCategories> allCategories) {
-        allCategoriesMain.addAll(allCategories);
-
-        binding.homeList.setAdapter(new MainRecyclerAdapter(this, requireContext(), mNames, mImageUrls, mDescription, allCategoriesMain));
+        binding.homeList.setAdapter(new MainRecyclerAdapter(this, requireContext(), mNames, mImageUrls, mDescription, categories));
     }
 
 
     //method to update list when scrolling
     private void onScroll() {
-
 
 
 
@@ -154,64 +136,10 @@ public class HomeFragment extends Fragment implements FragmentChange {
         //I need to check if my downloaded category title corresponds with the categories title, and only load that item into it in case it does
 
 
-        list.add(new AllCategories(categories.get(category), category));
-        allCategoriesMain.addAll(list);
+//        list.add(new AllCategories(categories.get(category), category));
+//        allCategoriesMain.addAll(list);
+        apps.clear();
         Objects.requireNonNull(binding.homeList.getAdapter()).notifyItemChanged(allCategoriesMain.size());
-    }
-
-    private void firebaseIntegration() {
-
-        db.collection("messaging")
-                .get()
-                .addOnCompleteListener(task -> {
-                    for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
-                        category = document.getString("category");
-                        long longItemPos = document.getLong("posInRow");
-                        int itemPos = Math.toIntExact(longItemPos);
-
-
-                        if (!categories.containsKey(category)) {
-
-                                categories.put(category, new ArrayList<CategoryChild>(Collections.singletonList(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")))));
-
-                        }else{
-                            if (!Objects.requireNonNull(categories.get(category)).contains(document.toObject(CategoryChild.class))){
-                                Objects.requireNonNull(categories.get(category)).add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
-                            }
-
-                        }
-
-//                        Objects.requireNonNull(categories.get(category)).sort(new Comparator<CategoryChild>() {
-//                            @Override
-//                            public int compare(CategoryChild categoryChild, CategoryChild t1) {
-//                                return Integer.compare(categoryChild.getItemPosition(), t1.getItemPosition());
-//                            }
-//                        });
-                        Log.d(TAG, "firebaseIntegration: ran times");
-                        addData();
-
-
-
-
-
-
-
-
-//                            switch (){
-////                                list.get(categoryId).getCategoryChildren().add(new CategoryChild(document.getString("description"), document.getString("name"), document.getString("icon")));
-//                            }
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: getting firebase failed");
-
-
-            }
-        });
-
-
     }
 
 
