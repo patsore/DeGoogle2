@@ -8,13 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.degoogle.R;
 import com.example.degoogle.interfaces.FragmentChange;
-import com.example.degoogle.model.AllCategories;
 import com.example.degoogle.model.CategoryChild;
 
 import java.util.ArrayList;
@@ -24,21 +22,13 @@ import java.util.Map;
 public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapter.MainViewHolder> {
 
     private static final String TAG = "MainRecyclerAdapter";
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
     private Context mContext;
-
-    private ArrayList<String> mDescription = new ArrayList<>();
     private Map<String,ArrayList<CategoryChild>> allCategories;
     FragmentChange fragmentChange;
     ArrayList<String> categories;
 
-    public MainRecyclerAdapter(FragmentChange callback, Context context, ArrayList<String> names, ArrayList<String> imageUrls, ArrayList<String> description, Map<String,ArrayList<CategoryChild>> allCategories) {
-
-        mNames = names;
-        mImageUrls = imageUrls;
+    public MainRecyclerAdapter(FragmentChange callback, Context context, Map<String,ArrayList<CategoryChild>> allCategories) {
         mContext = context;
-        mDescription = description;
         this.allCategories = allCategories;
         this.fragmentChange = callback;
     }
@@ -54,13 +44,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: " + allCategories.keySet());
-
         holder.categoryTitles.setText(categories.get(position));
-        setCatItemRecycler(holder.childRecycler, allCategories.get(categories.get(position)));
-
-
-
+        setChildAdapter(holder.childRecycler, allCategories.get(categories.get(position)));
     }
 
     @Override
@@ -80,8 +65,8 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<MainRecyclerAdapte
     }
 
 
-    private void setCatItemRecycler(RecyclerView recyclerView, ArrayList<CategoryChild> categoryChildren) {
-        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(fragmentChange, mContext, mNames, mImageUrls, mDescription, categoryChildren);
+    private void setChildAdapter(RecyclerView recyclerView, ArrayList<CategoryChild> categoryChildren) {
+        ChildItemRecyclerAdapter childItemRecyclerAdapter = new ChildItemRecyclerAdapter(fragmentChange, mContext, categoryChildren);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.HORIZONTAL, false));
         recyclerView.setAdapter(childItemRecyclerAdapter);
     }

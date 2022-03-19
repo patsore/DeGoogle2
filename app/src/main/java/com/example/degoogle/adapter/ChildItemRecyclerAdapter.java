@@ -32,12 +32,9 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
     FragmentChange mCallback;
 
 
-    public ChildItemRecyclerAdapter(FragmentChange callback, Context mContext, ArrayList<String> mNames, ArrayList<String> mImageUrls, ArrayList<String> mDescription, ArrayList<CategoryChild> categoryChildren) {
+    public ChildItemRecyclerAdapter(FragmentChange callback, Context mContext, ArrayList<CategoryChild> categoryChildren) {
         this.mContext = mContext;
-        this.mNames = mNames;
-        this.mImageUrls = mImageUrls;
-        this.mDescription = mDescription;
-        this.categoryChildren = categoryChildren;
+          this.categoryChildren = categoryChildren;
         this.mCallback = callback;
     }
 
@@ -62,9 +59,10 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         holder.itemView.setOnClickListener(view -> {
             //`TODO ID system
-            mCallback.fragmentChange(position);
+            mCallback.fragmentChange((String) holder.appName.getText());
+            //Just get the name of the app I clicked through holder.appName.getText();
 
-            Log.d(TAG, "click: SUCCESS" + position);
+            Log.d(TAG, "click: SUCCESS" + position + " " + holder.appName.getText());
         });
     }
 

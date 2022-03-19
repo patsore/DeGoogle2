@@ -40,13 +40,13 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/app_info"
-        android:name="com.example.degoogle.AppInfoFragment"
+        android:name="com.example.degoogle.ui.info.AppInfoFragment"
         android:label="fragment_app_info"
         tools:layout="@layout/fragment_app_info" >
         <argument
             android:name="id"
-            app:argType="integer"
-            android:defaultValue="0" />
+            app:argType="string"
+            android:defaultValue=" " />
     </fragment>
 
 </navigation>

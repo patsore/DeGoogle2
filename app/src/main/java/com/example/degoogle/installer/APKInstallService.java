@@ -12,17 +12,23 @@ import androidx.annotation.Nullable;
 public class APKInstallService extends Service {
     private static final String TAG = "APKInstallService";
 
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         int status = intent.getIntExtra(PackageInstaller.EXTRA_STATUS, -999);
+
         switch (status) {
             case PackageInstaller.STATUS_PENDING_USER_ACTION:
                 Log.d(TAG, "Requesting user confirmation for installation");
+                // This is a way to get the intent that was passed to the service.
                 Intent confirmationIntent = intent.getParcelableExtra(Intent.EXTRA_INTENT);
                 confirmationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
                     startActivity(confirmationIntent);
                 } catch (Exception e) {
+                    //No action
+
                 }
                 break;
             case PackageInstaller.STATUS_SUCCESS:

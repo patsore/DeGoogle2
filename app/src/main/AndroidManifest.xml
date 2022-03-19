@@ -8,7 +8,6 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-
     <application
 
         android:allowBackup="true"
@@ -31,9 +30,10 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+        <receiver android:name=".installer.InstallReceiver"/>
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
+            android:authorities="com.example.degoogle.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
