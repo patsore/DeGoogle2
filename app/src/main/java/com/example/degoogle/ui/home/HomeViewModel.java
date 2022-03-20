@@ -58,7 +58,7 @@ public class HomeViewModel extends ViewModel {
 
     private void firebaseIntegration() {
         allCategories = new MutableLiveData<>();
-        db.collection("messaging")
+        db.collection("apps")
                 .get()
                 .addOnCompleteListener(task -> {
                     for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {

@@ -11,11 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.degoogle.ui.info.AppInfoFragment;
 import com.example.degoogle.adapter.MainRecyclerAdapter;
 import com.example.degoogle.databinding.FragmentHomeBinding;
 import com.example.degoogle.interfaces.FragmentChange;
 import com.example.degoogle.model.CategoryChild;
+import com.example.degoogle.ui.info.AppInfoFragment;
+import com.example.degoogle.ui.info.JavaAppInfoFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
