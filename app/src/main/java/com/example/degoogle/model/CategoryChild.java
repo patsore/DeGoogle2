@@ -11,11 +11,21 @@ public class CategoryChild {
     String icon;
     int appId;
     String category = "";
+    String packageName = "";
 
     //Передавать айди и искать среди прочных
     public CategoryChild(){
 
     }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     public CategoryChild(String description, String name, String icon, int appId, String category) {
         this.description = description;
         this.name = name;

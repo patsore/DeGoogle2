@@ -23,7 +23,7 @@ class AppInfoViewModel(private val packagesDao: PackagesDao) : ViewModel() {
     fun addNewItem(packageName: String, version: String){
         val newItem = getNewItem(packageName, version)
         insertItem(newItem)
-        }
+    }
     fun isEntryValid(packageName: String, version: String): Boolean {
         if (packageName.isBlank() || version.isBlank()) {
             return false

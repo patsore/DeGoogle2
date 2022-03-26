@@ -59,10 +59,10 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         holder.itemView.setOnClickListener(view -> {
             //`TODO ID system
-            mCallback.fragmentChange((String) holder.appName.getText());
+            mCallback.fragmentChange(categoryChildren.get(position).getPackageName());
             //Just get the name of the app I clicked through holder.appName.getText();
 
-            Log.d(TAG, "click: SUCCESS" + position + " " + holder.appName.getText());
+            Log.d(TAG, "click: SUCCESS" + position + " " + categoryChildren.get(position).getPackageName());
         });
     }
 

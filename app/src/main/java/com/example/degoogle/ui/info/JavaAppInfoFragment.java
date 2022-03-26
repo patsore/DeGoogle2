@@ -3,6 +3,9 @@
  */
 package com.example.degoogle.ui.info;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -92,6 +95,9 @@ public class JavaAppInfoFragment extends BottomSheetDialogFragment {
 
     }
 
+
+
+
     private void getFiles(){
         file = requireContext().getExternalFilesDir("downloads");
     }
@@ -139,8 +145,9 @@ public class JavaAppInfoFragment extends BottomSheetDialogFragment {
             permissionDialog.show(getParentFragmentManager(), "test");
         } else {
             KotlinInstallMotor motor = new KotlinInstallMotor(requireActivity().getApplication());
-            motor.install(Uri.parse(outputFile.toURI().toString()));
+//            motor.install(Uri.parse(outputFile.toURI().toString()));
             Log.d(TAG, "installApk: " + Uri.parse(outputFile.toURI().toString()));
+
         }
     }
 

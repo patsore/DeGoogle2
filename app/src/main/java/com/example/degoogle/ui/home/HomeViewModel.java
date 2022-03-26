@@ -68,6 +68,7 @@ public class HomeViewModel extends ViewModel {
                         }else{
                             tempCategories.get(category).add(document.toObject(CategoryChild.class));
                         }
+
                         allCategories.setValue(tempCategories);
                         allCategories.postValue(allCategories.getValue());
                     }

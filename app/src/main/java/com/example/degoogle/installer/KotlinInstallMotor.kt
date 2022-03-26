@@ -8,6 +8,8 @@ import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.degoogle.interfaces.AddPackageItem
+import com.example.degoogle.ui.info.AppInfoFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -46,9 +48,9 @@ class KotlinInstallMotor(app: Application) : AndroidViewModel(app) {
                             getApplication(),
                             PI_INSTALL,
                             intent,
-                        //FLAG_MUTABLE
                             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
                     )
+
                     session.commit(pi.intentSender)
                     session.close()
                 }

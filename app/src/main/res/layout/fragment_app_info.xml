@@ -22,7 +22,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        tools:text="testsetsetsetsetsetsetsetset"
+        tools:text=""
         android:textSize="22sp"
         app:layout_constraintTop_toTopOf="@+id/app_icon"
         android:ellipsize="end"
@@ -64,4 +64,22 @@
         android:text="Button"
         app:layout_constraintStart_toStartOf="@+id/app_description"
         app:layout_constraintTop_toBottomOf="@+id/app_name" />
+
+    <TextView
+        android:id="@+id/downloaded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/app_description"
+        tools:layout_editor_absoluteX="111dp" />
+
+    <TextView
+        android:id="@+id/total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/downloadbutton"
+        app:layout_constraintTop_toBottomOf="@+id/downloaded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

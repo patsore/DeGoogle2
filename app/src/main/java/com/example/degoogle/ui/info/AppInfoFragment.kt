@@ -1,9 +1,10 @@
-/*
-  This class is used to download the apk file from the firebase storage and install it
- */
 package com.example.degoogle.ui.info
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -31,7 +32,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
 
-class AppInfoFragment : BottomSheetDialogFragment() {
+class AppInfoFragment : BottomSheetDialogFragment(){
     var db = FirebaseFirestore.getInstance()
     private var binding: FragmentAppInfoBinding? = null
     var storage = FirebaseStorage.getInstance()
@@ -46,7 +47,7 @@ class AppInfoFragment : BottomSheetDialogFragment() {
     private val appInfoViewModel: AppInfoViewModel? = null
     private val viewModel: AppInfoViewModel by activityViewModels{
         AppInfoViewModelFactory(
-            (activity?.application as DegoogleApplication).database
+            (requireActivity()?.application as DegoogleApplication).database
                 .packagesDao()
         )
     }
@@ -63,6 +64,7 @@ class AppInfoFragment : BottomSheetDialogFragment() {
         {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(READ_EXTERNAL_STORAGE), 1)
         }
+        requireActivity().registerReceiver(installReceiver, IntentFilter("installSuccess"))
         val config = PRDownloaderConfig.newBuilder()
             .setReadTimeout(30000)
             .setConnectTimeout(30000)
@@ -91,6 +93,8 @@ class AppInfoFragment : BottomSheetDialogFragment() {
             return args!!.getString("key")
         }
 
+
+
     private fun getDataFromFirebase(id: String?) {
         db.collection("apps")
             .document(id!!)
@@ -106,7 +110,7 @@ class AppInfoFragment : BottomSheetDialogFragment() {
                     )
                 outputFile = File(file, name!!.lowercase() +".apk")
                 downloadUri = document.getString("downloadUrl")
-                packageName = document.getString("packageName")
+                packageName = document.getId()
                 version = document.getString("version")
             }
     }
@@ -130,24 +134,38 @@ class AppInfoFragment : BottomSheetDialogFragment() {
     }
 
     private fun downloader(uri: String) {
-        PRDownloader.download(uri, file.toString(), "$name.apk")
-            .build()
-            .setOnProgressListener { progress: Progress ->
-                val downloadProgress =
-                    (progress.currentBytes * 1f / progress.totalBytes * 100).toInt()
-                binding!!.downloadProgressBar.progress = downloadProgress
-            }
-            .start(object : OnDownloadListener {
-                @RequiresApi(api = Build.VERSION_CODES.S)
-                override fun onDownloadComplete() {
-                    installApk()
+        if (!requireContext().packageManager.canRequestPackageInstalls()) {
+            PermissionDialog().show(parentFragmentManager, "test")
+        }else {
+            PRDownloader.download(uri, file.toString(), "$name.apk")
+                .build()
+                .setOnProgressListener { progress: Progress ->
+                    val downloadProgress =
+                        (progress.currentBytes * 1f / progress.totalBytes * 100).toInt()
+                    binding?.downloaded?.setText(progress.currentBytes.toString())
+                    binding!!.total?.setText(progress.totalBytes.toString())
+                    binding!!.downloadProgressBar.progress = downloadProgress
                 }
+                .start(object : OnDownloadListener {
+                    @RequiresApi(api = Build.VERSION_CODES.S)
+                    override fun onDownloadComplete() {
+                        installApk()
+                    }
 
-                override fun onError(error: Error) {
-                    Log.d(TAG, "onError: download error")
-                }
-            })
+                    override fun onError(error: Error) {
+                        Log.d(TAG, "onError: download error")
+                    }
+                })
+        }
     }
+
+    var installReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            Log.d(TAG, "onReceive: intent received $packageName-$version")
+            addToDatabase()
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     private fun installApk() {
@@ -159,18 +177,23 @@ class AppInfoFragment : BottomSheetDialogFragment() {
         } else {
             val motor = KotlinInstallMotor(requireActivity().application)
             motor.install(Uri.fromFile(outputFile))
-            if(isEntryValid()){
-                viewModel.addNewItem(
-                    packageName.toString(),
-                    version.toString()
-                )
-
-            }
         }
 
     }
+    fun addToDatabase() {
+        if (isEntryValid()) {
+            viewModel.addNewItem(
+                packageName.toString(),
+                version.toString()
+            )
+            Log.d(TAG, "addToDatabase: $packageName $version" )
+
+        }
+    }
+
 
     companion object {
         private const val TAG = "AppInfoFragment"
     }
+
 }
