@@ -40,7 +40,7 @@
         android:label="SettingsFragment" />
     <fragment
         android:id="@+id/app_info"
-        android:name="com.example.degoogle.ui.info.JavaAppInfoFragment"
+        android:name="com.example.degoogle.ui.info.AppInfoFragment"
         android:label="fragment_app_info"
         tools:layout="@layout/fragment_app_info" >
         <argument

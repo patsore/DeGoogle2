@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.degoogle.databinding.FragmentUpdatesBinding;
 
+import kotlin.reflect.KFunction;
+
 public class UpdatesFragment extends Fragment {
 
     private UpdatesViewModel updatesViewModel;
@@ -26,19 +28,11 @@ public class UpdatesFragment extends Fragment {
 
         binding = FragmentUpdatesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textUpdates;
-        updatesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView(){
         super.onDestroyView();
         binding = null;
     }

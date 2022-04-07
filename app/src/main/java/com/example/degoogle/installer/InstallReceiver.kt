@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInstaller
 import android.util.Log
-import com.example.degoogle.DegoogleApplication
-import com.example.degoogle.data.PackagesDao
 import com.example.degoogle.interfaces.AddPackageItem
 import com.example.degoogle.ui.info.AppInfoFragment
 
