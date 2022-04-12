@@ -7,9 +7,7 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-import static com.google.gson.internal.$Gson$Types.arrayOf;
-
-import android.Manifest;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -28,26 +26,25 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.Data;
 
 import com.bumptech.glide.Glide;
 import com.downloader.Error;
 import com.downloader.OnDownloadListener;
 import com.downloader.PRDownloader;
-import com.downloader.PRDownloaderConfig;
 import com.example.degoogle.data.entities.InstalledPackages;
 import com.example.degoogle.databinding.FragmentAppInfoBinding;
 import com.example.degoogle.dialogs.PermissionDialog;
 import com.example.degoogle.installer.KotlinInstallMotor;
+import com.example.degoogle.model.AppInfoModel;
+import com.example.degoogle.network.Downloader;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.util.Objects;
-
-import javax.xml.transform.sax.SAXResult;
 
 public class AppInfoFragment extends BottomSheetDialogFragment {
 
@@ -60,31 +57,64 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
     File file;
     String downloadUri;
     File outputFile;
+    String packageName;
     private AppInfoViewModel appInfoViewModel;
     private String version;
 
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
         binding = FragmentAppInfoBinding.inflate(inflater, container, false);
         requireActivity().registerReceiver(new installResultReceiver(), new IntentFilter("installSuccess"));
-        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
-                .setReadTimeout(30000)
-                .setConnectTimeout(30000)
-                .build();
-        PRDownloader.initialize(requireContext(), config);
+
+        new Downloader(requireContext()).setup();
+
         appInfoViewModel = new ViewModelProvider(this).get(AppInfoViewModel.class);
-        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED || ContextCompat.checkSelfPermission(requireContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[] {READ_EXTERNAL_STORAGE}, 1);
-            ActivityCompat.requestPermissions(requireActivity(), new String[] {WRITE_EXTERNAL_STORAGE}, 1);
-        }
         observeData();
+        if(ContextCompat.checkSelfPermission(requireContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_EXTERNAL_STORAGE}, 1);
+        }
+        if(ContextCompat.checkSelfPermission(requireContext(), WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+        }
         return binding.getRoot();
     }
 
-    private void observeData(){
-        appInfoViewModel.getAllPackages().observe(getViewLifecycleOwner(), InstalledPackages  -> {
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void setValues(AppInfoModel appInfoModel){
+        binding.setViewModel(appInfoViewModel);
+        //DataBinding for everything
+//        binding.appVersion.setText(appInfoViewModel.getAppVersion());
+        packageName = appInfoModel.getPackageName();
+        outputFile = new File(file, appInfoModel.getPackageName() + ".apk");
 
+
+        binding.appIcon.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(appInfoModel.getIcon()), "image/*");
+            startActivity(intent);
         });
+        binding.appDownload.setOnClickListener(v -> {
+            downloadUri = appInfoModel.getDownloadUrl();
+            downloader(downloadUri);
+        });
+        binding.appInstall.setOnClickListener(v -> {
+//                installApk();
+                appInfoViewModel.installApk(packageName, outputFile);
+            });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void observeData(){
+//        Log.d(TAG, "observeData: observed data changed " + appInfoViewModel.getAllPackages().getValue());
+//        appInfoViewModel.getAllPackages().observe(getViewLifecycleOwner(), installedPackages  -> {
+//            Log.d(TAG, "observeData: observed data changed " + installedPackages.get(0).getPackageName() + " " + installedPackages.get(0).getPackageVersion());
+//        });
+//
+        appInfoViewModel.getDataFromFirebase(args());
+        appInfoViewModel.getPackageInfo().observe(getViewLifecycleOwner(), this::setValues);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -92,9 +122,7 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getFiles();
-        getDataFromFirebase(args());
-        binding.downloadbutton.setOnClickListener(view1 -> downloadFile());
-        binding.button1.setOnClickListener(view12 -> installApk());
+        observeData();
     }
 
 
@@ -103,24 +131,7 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         return Objects.requireNonNull(args).getString("key");
     }
 
-    private void getDataFromFirebase(String id) {
 
-        db.collection("apps")
-                .document(id)
-                .get()
-                .addOnCompleteListener(task -> {
-                    DocumentSnapshot document = task.getResult();
-                    apk = Objects.requireNonNull(document).getString("file");
-                    binding.appName.setText(document.getString("name"));
-                    binding.appDescription.setText(document.getString("description"));
-                    Glide.with(requireContext()).load(document.getString("icon")).into(binding.appIcon);
-                    outputFile = new File(file, document.getString("name") + ".apk");
-                    downloadUri = document.getString("downloadUrl");
-                    version = document.getString("version");
-                });
-
-
-    }
 
 
 
@@ -129,17 +140,18 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         file = requireContext().getExternalFilesDir("downloads");
     }
 
-    public void downloadFile() {
-        if (downloadUri == null) {
-            appReference = storage.getReference(apk + ".apk");
-            appReference.getDownloadUrl().addOnSuccessListener(uri -> downloader(uri.toString())).addOnFailureListener(e -> Log.d(TAG, "downloadFile: " + "no file found"));
-        }else{
-            downloader(downloadUri);
+
+
+
+    
+    public class installResultReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            appInfoViewModel.insert(new InstalledPackages(args(), version));
         }
     }
-
-    private void downloader(String uri){
-        PRDownloader.download(uri, file.toString(), apk + ".apk")
+    private void downloader(String url){
+        PRDownloader.download(url, requireContext().getExternalFilesDir("downloads").toString(), packageName + ".apk")
                 .build()
                 .setOnProgressListener(progress -> {
                     int downloadProgress = (int) ((progress.currentBytes * 1f /progress.totalBytes) * 100);
@@ -151,45 +163,30 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
                     @RequiresApi(api = Build.VERSION_CODES.S)
                     @Override
                     public void onDownloadComplete() {
-                        installApk();
+                         appInfoViewModel.installApk(packageName, outputFile);
+//                    installApk();
                     }
+
 
                     @Override
                     public void onError(Error error) {
                         Log.d(TAG, "onError: download error");
                     }
                 });
-
-
-    }
-    
-    public class installResultReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            ;
-            appInfoViewModel.insert(new InstalledPackages(args(), version));
-        }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     private void installApk(){
-        if(!file.mkdirs()){
-            Log.d(TAG, "installApk: failed to create directories");
-        }
-        
+        //TODO WorkManager/Service
         if (!requireContext().getPackageManager().canRequestPackageInstalls()) {
             PermissionDialog permissionDialog = new PermissionDialog();
             permissionDialog.show(getParentFragmentManager(), "test");
         } else {
             KotlinInstallMotor motor = new KotlinInstallMotor(requireActivity().getApplication());
             motor.install(Uri.parse(outputFile.toURI().toString()));
-            Log.d(TAG, "installApk: " + Uri.parse(outputFile.toURI().toString()));
+            Log.d("Worker Class (Not)", "installApk: " + Uri.parse(outputFile.toString()));
 
         }
     }
-
-
-
 
 }
 

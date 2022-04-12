@@ -25,12 +25,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildFeatures {
         viewBinding true
+    }
+    dataBinding {
+        enabled true
     }
     packagingOptions{
         resources.excludes.add("META-INF/DEPENDENCIES")
@@ -39,8 +43,27 @@ android {
     buildToolsVersion '32.1.0-rc1'
 }
 
+
 dependencies {
+    // (Java only)
+    def work_version = "2.7.1"
+    implementation "androidx.work:work-runtime:$work_version"
+
+    // optional - RxJava2 support
+    implementation "androidx.work:work-rxjava2:$work_version"
+
+    // optional - GCMNetworkManager support
+    implementation "androidx.work:work-gcm:$work_version"
+
+    // optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+
+    // optional - Multiprocess support
+    implementation "androidx.work:work-multiprocess:$work_version"
+
+
     def room_version = "2.4.2"
+
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 

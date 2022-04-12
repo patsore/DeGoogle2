@@ -58,7 +58,7 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
         holder.description.setText(categoryChildren.get(position).getDescription());
 
         holder.itemView.setOnClickListener(view -> {
-            //`TODO ID system
+            //TODO ID system
             mCallback.fragmentChange(categoryChildren.get(position).getPackageName());
             //Just get the name of the app I clicked through holder.appName.getText();
 
