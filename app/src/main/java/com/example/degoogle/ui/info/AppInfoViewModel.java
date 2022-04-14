@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -65,6 +66,6 @@ public class AppInfoViewModel extends AndroidViewModel{
     public void installApk(String packageName, File file) {
         Data data = new Data.Builder().putString("file", file.toURI().toString()).build();
         OneTimeWorkRequest.Builder downloadWorker = new OneTimeWorkRequest.Builder(DownloadWorker.class).setInputData(data);
-        workManager.enqueue(downloadWorker.build());
+        workManager.enqueueUniqueWork("packageInstall", ExistingWorkPolicy.KEEP ,downloadWorker.build());
     }
 }

@@ -4,4 +4,20 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
+    <style name="Theme.Progress" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="trackColor">?attr/colorSurface</item>
+        <item name="trackThickness">8dp</item>
+        <item name="trackCornerRadius">4dp</item>
+    </style>
+
+    <style name="Shape.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">@dimen/shape_small_corner</item>
+    </style>
+    <style name="ShapeAppearanceOverlay.Material3.Button.Download">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="backgroundTint">@color/purple_500</item>
+    </style>
+
 </resources>

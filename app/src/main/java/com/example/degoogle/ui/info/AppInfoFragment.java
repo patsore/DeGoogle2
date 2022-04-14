@@ -7,7 +7,6 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,12 +25,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.Data;
 
-import com.bumptech.glide.Glide;
-import com.downloader.Error;
-import com.downloader.OnDownloadListener;
-import com.downloader.PRDownloader;
 import com.example.degoogle.data.entities.InstalledPackages;
 import com.example.degoogle.databinding.FragmentAppInfoBinding;
 import com.example.degoogle.dialogs.PermissionDialog;
@@ -39,38 +33,30 @@ import com.example.degoogle.installer.KotlinInstallMotor;
 import com.example.degoogle.model.AppInfoModel;
 import com.example.degoogle.network.Downloader;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Objects;
 
 public class AppInfoFragment extends BottomSheetDialogFragment {
 
     private static final String TAG = "AppInfoFragment";
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
     private FragmentAppInfoBinding binding;
-    FirebaseStorage storage = FirebaseStorage.getInstance();
-    StorageReference appReference;
-    String apk = "";
     File file;
     String downloadUri;
     File outputFile;
     String packageName;
     private AppInfoViewModel appInfoViewModel;
     private String version;
-
+    Downloader downloader;
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         binding = FragmentAppInfoBinding.inflate(inflater, container, false);
         requireActivity().registerReceiver(new installResultReceiver(), new IntentFilter("installSuccess"));
-
-        new Downloader(requireContext()).setup();
-
         appInfoViewModel = new ViewModelProvider(this).get(AppInfoViewModel.class);
         observeData();
         if(ContextCompat.checkSelfPermission(requireContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
@@ -79,31 +65,33 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         if(ContextCompat.checkSelfPermission(requireContext(), WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE}, 1);
         }
+
+        downloader = new Downloader(requireContext(), binding, appInfoViewModel);
+        downloader.setup();
         return binding.getRoot();
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void setValues(AppInfoModel appInfoModel){
         binding.setViewModel(appInfoViewModel);
+
         //DataBinding for everything
 //        binding.appVersion.setText(appInfoViewModel.getAppVersion());
         packageName = appInfoModel.getPackageName();
         outputFile = new File(file, appInfoModel.getPackageName() + ".apk");
+            binding.size.setText("123451872");
 
-
-        binding.appIcon.setOnClickListener(v -> {
+        binding.icon.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(appInfoModel.getIcon()), "image/*");
             startActivity(intent);
         });
-        binding.appDownload.setOnClickListener(v -> {
+        binding.installButton.setOnClickListener(v -> {
             downloadUri = appInfoModel.getDownloadUrl();
-            downloader(downloadUri);
+            downloader.downloadStart(downloadUri, packageName, outputFile);
         });
-        binding.appInstall.setOnClickListener(v -> {
-//                installApk();
-                appInfoViewModel.installApk(packageName, outputFile);
-            });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.S)
@@ -125,6 +113,25 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         observeData();
     }
 
+    public long getFileSize(URL url) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            return conn.getContentLengthLong();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     private String args(){
             Bundle args = getArguments();
@@ -150,30 +157,7 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
             appInfoViewModel.insert(new InstalledPackages(args(), version));
         }
     }
-    private void downloader(String url){
-        PRDownloader.download(url, requireContext().getExternalFilesDir("downloads").toString(), packageName + ".apk")
-                .build()
-                .setOnProgressListener(progress -> {
-                    int downloadProgress = (int) ((progress.currentBytes * 1f /progress.totalBytes) * 100);
-                    binding.downloaded.setText(String.valueOf(progress.currentBytes));
-                    binding.total.setText(String.valueOf(progress.totalBytes));
-                    binding.downloadProgressBar.setProgress(downloadProgress);
-                })
-                .start(new OnDownloadListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.S)
-                    @Override
-                    public void onDownloadComplete() {
-                         appInfoViewModel.installApk(packageName, outputFile);
-//                    installApk();
-                    }
 
-
-                    @Override
-                    public void onError(Error error) {
-                        Log.d(TAG, "onError: download error");
-                    }
-                });
-    }
 
     private void installApk(){
         //TODO WorkManager/Service

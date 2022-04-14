@@ -61,6 +61,13 @@ dependencies {
     // optional - Multiprocess support
     implementation "androidx.work:work-multiprocess:$work_version"
 
+// Material Components for Android. Replace the version with the latest version of Material Components library.
+    implementation 'com.google.android.material:material:1.5.0'
+
+    // Circle Indicator (To fix the xml preview "Missing classes" error)
+    implementation 'me.relex:circleindicator:2.1.6'
+
+    implementation 'org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0'
 
     def room_version = "2.4.2"
 
