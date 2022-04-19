@@ -37,19 +37,19 @@ public class HomeViewModel extends ViewModel {
 
     private void getCategories() {
 
-        allCategories = new MutableLiveData<>();
+//        allCategories = new MutableLiveData<>();
         Retrofit retrofit = RetrofitClient.getInstance();
         JsonPlaceholderApi api = retrofit.create(JsonPlaceholderApi.class);
-        Call<ArrayList<AllCategories>> call = api.allCats();
-        call.enqueue(new Callback<ArrayList<AllCategories>>() {
+        Call<Map<String, ArrayList<CategoryChild>>> call = api.allCats();
+        call.enqueue(new Callback<Map<String, ArrayList<CategoryChild>>>() {
             @Override
-            public void onResponse(Call<ArrayList<AllCategories>> call, Response<ArrayList<AllCategories>> response) {
+            public void onResponse(Call<Map<String, ArrayList<CategoryChild>>> call, Response<Map<String, ArrayList<CategoryChild>>> response) {
                 Log.d(TAG, "onResponse: SUCCESS");
 //                if(response.body()!=null)allCategories.setValue(response.body());
             }
 
             @Override
-            public void onFailure(Call<ArrayList<AllCategories>> call, Throwable t) {
+            public void onFailure(Call<Map<String, ArrayList<CategoryChild>>> call, Throwable t) {
                 Log.d(TAG, "onFailure: failed");
             }
         });

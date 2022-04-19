@@ -3,10 +3,9 @@
  */
 package com.example.degoogle.ui.info;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,30 +17,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.degoogle.R;
+import com.example.degoogle.adapter.ScreenshotRecyclerAdapter;
 import com.example.degoogle.data.entities.InstalledPackages;
 import com.example.degoogle.databinding.FragmentAppInfoBinding;
 import com.example.degoogle.dialogs.PermissionDialog;
 import com.example.degoogle.installer.KotlinInstallMotor;
-import com.example.degoogle.model.AppInfoModel;
+import com.example.degoogle.model.Product;
 import com.example.degoogle.network.Downloader;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class AppInfoFragment extends BottomSheetDialogFragment {
-
     private static final String TAG = "AppInfoFragment";
     private FragmentAppInfoBinding binding;
     File file;
@@ -50,6 +58,8 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
     String packageName;
     private AppInfoViewModel appInfoViewModel;
     private String version;
+    private int whilecheckthing;
+    private int defaultScreenshotRvHeight;
     Downloader downloader;
     @RequiresApi(api = Build.VERSION_CODES.S)
     @Override
@@ -59,40 +69,122 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         requireActivity().registerReceiver(new installResultReceiver(), new IntentFilter("installSuccess"));
         appInfoViewModel = new ViewModelProvider(this).get(AppInfoViewModel.class);
         observeData();
-        if(ContextCompat.checkSelfPermission(requireContext(), READ_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{READ_EXTERNAL_STORAGE}, 1);
-        }
-        if(ContextCompat.checkSelfPermission(requireContext(), WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{WRITE_EXTERNAL_STORAGE}, 1);
-        }
+        Dexter.withContext(requireContext()).withPermission(Manifest.permission.QUERY_ALL_PACKAGES).withListener(new PermissionListener() {
+            @Override
+            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
 
-        downloader = new Downloader(requireContext(), binding, appInfoViewModel);
-        downloader.setup();
+            }
+
+            @Override
+            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                requireActivity().finishAffinity();
+            }
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+
+            }
+        });
         return binding.getRoot();
     }
 
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.S)
-    private void setValues(AppInfoModel appInfoModel){
+    private void setValues(Product product){
+        binding.progress.setVisibility(View.GONE);
         binding.setViewModel(appInfoViewModel);
-
-        //DataBinding for everything
-//        binding.appVersion.setText(appInfoViewModel.getAppVersion());
-        packageName = appInfoModel.getPackageName();
-        outputFile = new File(file, appInfoModel.getPackageName() + ".apk");
+        ArrayList<String> screenshots = product.getImageCarousel();
+        setScreenshotData(screenshots);
+        outputFile = new File(file, product.getPackageName() + ".apk");
             binding.size.setText("123451872");
-
-        binding.icon.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.parse(appInfoModel.getIcon()), "image/*");
-            startActivity(intent);
-        });
+        binding.cardExpansionIndicator.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_up_24);
+        packageName = product.getPackageName();
+        version = product.getVersion();
         binding.installButton.setOnClickListener(v -> {
-            downloadUri = appInfoModel.getDownloadUrl();
-            downloader.downloadStart(downloadUri, packageName, outputFile);
+
+            binding.progress.setVisibility(View.VISIBLE);
+            downloadUri = product.getDownloadUrl();
+            Log.d(TAG, "setValues: "+ product.getDownloadUrl());
+            if (!requireContext().getPackageManager().canRequestPackageInstalls()) {
+                PermissionDialog permissionDialog = new PermissionDialog();
+                permissionDialog.show(getChildFragmentManager(), "permissionDialog");
+            }else{
+                downloader.downloadStart(downloadUri, packageName, outputFile);
+            }
+        });
+        while(binding.screenshotBlock.getVisibility() == View.VISIBLE && whilecheckthing != 1){
+            defaultScreenshotRvHeight = binding.screenshotRv.getHeight();
+            whilecheckthing = 1;
+        }
+        binding.screenshotText.setOnClickListener(v -> {
+           if(binding.collapsibleScreenshotsBlock.getVisibility() == View.GONE){
+               expand(binding.collapsibleScreenshotsBlock, 300, 0);
+               binding.cardExpansionIndicator.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_down_24);
+           }else{
+               collapse(binding.collapsibleScreenshotsBlock, 200, defaultScreenshotRvHeight);
+//               TransitionManager.beginDelayedTransition(binding.collapsibleScreenshotsBlock, );
+//               binding.collapsibleScreenshotsBlock.setVisibility(View.GONE);
+               binding.cardExpansionIndicator.setBackgroundResource(R.drawable.ic_baseline_arrow_drop_up_24);
+           }
         });
     }
+    private void setScreenshotData(ArrayList<String> screenshotsUrlList){
+
+        binding.screenshotRv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
+        binding.screenshotRv.setAdapter(new ScreenshotRecyclerAdapter(requireContext(), screenshotsUrlList));
+
+    }
+    public static void expand(final View v, int duration, int targetHeight) {
+
+        int prevHeight  = targetHeight - targetHeight;
+
+        v.setVisibility(View.VISIBLE);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
+        valueAnimator.addUpdateListener(animation -> {
+            v.getLayoutParams().height = (int) animation.getAnimatedValue();
+            v.requestLayout();
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
+    }
+
+    public static void collapse(final View v, int duration, int targetHeight) {
+        int prevHeight  = v.getHeight();
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(prevHeight, targetHeight);
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.addUpdateListener(animation -> {
+            v.getLayoutParams().height = (int) animation.getAnimatedValue();
+            v.requestLayout();
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        valueAnimator.setInterpolator(new DecelerateInterpolator());
+        valueAnimator.setDuration(duration);
+        valueAnimator.start();
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void observeData(){
@@ -111,6 +203,9 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         getFiles();
         observeData();
+//        binding.imageCarousel.registerLifecycle(getViewLifecycleOwner());
+        downloader = new Downloader(requireContext(), binding, appInfoViewModel);
+        downloader.setup();
     }
 
     public long getFileSize(URL url) {
@@ -163,7 +258,7 @@ public class AppInfoFragment extends BottomSheetDialogFragment {
         //TODO WorkManager/Service
         if (!requireContext().getPackageManager().canRequestPackageInstalls()) {
             PermissionDialog permissionDialog = new PermissionDialog();
-            permissionDialog.show(getParentFragmentManager(), "test");
+            permissionDialog.show(getChildFragmentManager(), "test");
         } else {
             KotlinInstallMotor motor = new KotlinInstallMotor(requireActivity().getApplication());
             motor.install(Uri.parse(outputFile.toURI().toString()));

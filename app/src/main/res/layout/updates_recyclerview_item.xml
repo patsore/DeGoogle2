@@ -20,7 +20,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <androidx.appcompat.widget.AppCompatImageView
+            android:background="@drawable/top_rounded_corners"
             android:id="@+id/update_icon"
             android:layout_width="50dp"
             android:layout_height="match_parent"

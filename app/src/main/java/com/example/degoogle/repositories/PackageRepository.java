@@ -27,6 +27,8 @@ public class PackageRepository {
     public void insert(InstalledPackages installedPackages) {
     RoomPackagesDatabase.databaseWriteExecutor.execute(() -> packagesDao.insert(installedPackages));
     }
-
+    public void delete(InstalledPackages installedPackages){
+        RoomPackagesDatabase.databaseWriteExecutor.execute(() -> packagesDao.delete(installedPackages));
+    }
 
 }

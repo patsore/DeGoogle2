@@ -21,13 +21,8 @@ import java.util.ArrayList;
 
 public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecyclerAdapter.ChildItemViewHolder> {
     private Context mContext;
-    public ImageView childImage;
-    private ArrayList<String> mNames = new ArrayList<>();
-    private ArrayList<String> mImageUrls = new ArrayList<>();
-    public ArrayList<String> mDescription = new ArrayList<>();
     public ArrayList<CategoryChild> categoryChildren;
     public String TAG = "ChildItemRecyclerAdapter";
-    public int ItemPosition;
 
     FragmentChange mCallback;
 
@@ -59,8 +54,6 @@ public class ChildItemRecyclerAdapter extends RecyclerView.Adapter<ChildItemRecy
 
         holder.itemView.setOnClickListener(view -> {
             mCallback.fragmentChange(categoryChildren.get(position).getPackageName());
-            //Just get the name of the app I clicked through holder.appName.getText();
-
             Log.d(TAG, "click: SUCCESS" + position + " " + categoryChildren.get(position).getPackageName());
         });
     }

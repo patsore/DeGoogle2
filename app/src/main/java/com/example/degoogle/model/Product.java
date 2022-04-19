@@ -7,9 +7,11 @@ import androidx.databinding.BindingAdapter;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.PropertyName;
 
+import java.util.ArrayList;
+
 import kotlin.jvm.JvmStatic;
 
-public class AppInfoModel {
+public class Product {
     @PropertyName("name")
     private String name;
     @PropertyName("packageName")
@@ -31,11 +33,19 @@ public class AppInfoModel {
     @PropertyName("downloadUrl")
     private String downloadUrl;
     private String gitLink;
+    private ArrayList<String> imageCarousel;
 
 
-    public AppInfoModel() {
+    public Product() {
     }
 
+    public ArrayList<String> getImageCarousel() {
+        return imageCarousel;
+    }
+
+    public void setImageCarousel(ArrayList<String> imageCarousel) {
+        this.imageCarousel = imageCarousel;
+    }
 
     public String getName() {
         return name;
